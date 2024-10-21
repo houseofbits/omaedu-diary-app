@@ -1,0 +1,20 @@
+{
+    "name": "krists/diary-plugin",
+    "autoload": {
+        "psr-4": {
+          "Backend\\": "backend/"
+        }
+      },    
+    "authors": [
+        {
+            "name": "Krists Pudzens",
+            "email": "kpudzens@gmail.com"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^5.6",
+        "php-di/php-di": "^7.0",
+        "doctrine/orm": "^2.12",
+        "doctrine/annotations":	"^1.13"
+    }
+}
