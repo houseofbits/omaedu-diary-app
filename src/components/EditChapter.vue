@@ -2,6 +2,7 @@
 import { ref, nextTick, watch } from "vue";
 import { clone, set } from "lodash";
 import EditChapterHeader from "./EditChapterHeader.vue";
+import PagePreview from "./PagePreview.vue";
 
 const props = defineProps({
   chapter: Object,
@@ -12,6 +13,9 @@ const titleText = ref(props.chapter.title);
 const locationText = ref(props.chapter.location);
 const dateText = ref(props.chapter.date);
 const storyText = ref(props.chapter.story);
+const previewPageNum = ref(0);
+const isNextPageButtonEnabled = ref(false);
+const isPrevPageButtonEnabled = ref(false);
 
 function emitUpdatedChapter() {
   const chapter = clone(props.chapter);
@@ -22,6 +26,11 @@ function emitUpdatedChapter() {
   set(chapter, "story", storyText.value);
 
   emit("update", chapter);
+}
+
+function onPreviewRender(hasNextPage, hasPrevPage) {
+  isNextPageButtonEnabled.value = hasNextPage;
+  isPrevPageButtonEnabled.value = hasPrevPage;
 }
 
 watch(
@@ -60,8 +69,8 @@ watch(
   <v-tabs-window v-model="tab" class="h-100">
     <v-tabs-window-item :key="1" :value="1">
       <v-sheet
-        class="pa-4 text-center mx-auto"
-        elevation="3"
+        class="mt-4 pa-4 text-center mx-auto"
+        elevation="4"
         max-width="800"
         width="100%"
         height="100%"
@@ -101,16 +110,61 @@ watch(
     </v-tabs-window-item>
 
     <v-tabs-window-item :key="3" :value="3">
-      <v-responsive :aspect-ratio="0.707" class="border ma-8 pa-4 elevation-7">
-        <div class="w-100 h-100 border-thin d-flex flex-wrap">
-          <div
-            style="display: grid; grid-template-columns: auto 1fr; gap: 10px"
-          >
-            <img src="https://picsum.photos/200" alt="Scenic View" />
-            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, </p>
-          </div>
-        </div>
-      </v-responsive>
+      <v-sheet class="mt-4 text-center mx-auto" max-width="800">
+        <v-row>
+          <v-col class="d-flex justify-start align-center" cols="1">
+            <v-btn
+              color="primary"
+              class="px-2 py-1 ml-4"
+              size="xl"
+              rounded="xl"
+              :disabled="!isPrevPageButtonEnabled"
+              @click="previewPageNum--"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="20"
+                width="12.5"
+                viewBox="0 0 320 512"
+              >
+                <path
+                  fill="white"
+                  d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"
+                />
+              </svg>
+            </v-btn>
+          </v-col>
+          <v-col class="flex-grow-1">
+            <page-preview
+              :chapter="chapter"
+              :page="previewPageNum"
+              @render="onPreviewRender"
+            ></page-preview>
+          </v-col>
+          <v-col class="d-flex justify-center align-center" cols="1">
+            <v-btn
+              color="primary"
+              class="px-2 py-1 mr-4"
+              size="xl"
+              rounded="xl"
+              :disabled="!isNextPageButtonEnabled"
+              @click="previewPageNum++"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                height="20"
+                width="12.5"
+                viewBox="0 0 320 512"
+              >
+                <path
+                  fill="white"
+                  d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"
+                />
+              </svg>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-sheet>
     </v-tabs-window-item>
   </v-tabs-window>
 </template>

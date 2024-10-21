@@ -3,7 +3,6 @@ import { reactive, ref } from "vue";
 import EditChapter from "./components/EditChapter.vue";
 import Chapters from "./components/Chapters.vue";
 import ChaptersHeader from "./components/ChaptersHeader.vue";
-import PagePreview from "./components/PagePreview.vue";
 
 const chapters = reactive([]);
 
@@ -45,7 +44,7 @@ function updateChapter(chapter) {
       <chapters :chapters="chapters" @select="selectChapter" />
     </template>
 
-    <page-preview></page-preview>
+    
   </v-app>
 </template>
 
