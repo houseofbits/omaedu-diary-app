@@ -21,8 +21,7 @@ import App from './App.vue'
 //       success: '#4CAF50',
 //       warning: '#FB8C00',
 //     },
-//   }
-  
+//   }  
 
 const vuetify = createVuetify({
     components,

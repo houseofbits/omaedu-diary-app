@@ -117,7 +117,9 @@ watch(
               color="primary"
               class="px-2 py-1 ml-4"
               size="xl"
+              min-width="30"
               rounded="xl"
+
               :disabled="!isPrevPageButtonEnabled"
               @click="previewPageNum--"
             >
@@ -141,11 +143,12 @@ watch(
               @render="onPreviewRender"
             ></page-preview>
           </v-col>
-          <v-col class="d-flex justify-center align-center" cols="1">
+          <v-col class="d-flex justify-end align-center" cols="1">
             <v-btn
               color="primary"
               class="px-2 py-1 mr-4"
               size="xl"
+              min-width="30"
               rounded="xl"
               :disabled="!isNextPageButtonEnabled"
               @click="previewPageNum++"

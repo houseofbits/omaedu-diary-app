@@ -46,6 +46,10 @@ export default class CanvasTextFormatter {
     }
 
     drawLine(ctx, words, posX, posY, maxWidth) {
+        if (words.length === 0) {
+            return;
+        }
+
         var currentLine = "";
         while (words.length > 0) {
             let width;
@@ -58,7 +62,9 @@ export default class CanvasTextFormatter {
             if (width < maxWidth) {
                 const word = words.shift();
                 currentLine += word + " ";
-            } else {
+            }
+
+            if (width >= maxWidth || words.length === 0) {
                 ctx.fillText(currentLine.trim(), posX, posY);
 
                 return;

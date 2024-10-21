@@ -21,6 +21,10 @@ const formatter = new CanvasTextFormatter();
 const layouts = [
   new PageLayout(null, [new Rect(0, 400, 400, 400)]),
   new PageLayout(),
+  new PageLayout(),
+  new PageLayout(),
+  new PageLayout(),
+  new PageLayout(),
 ];
 
 function renderPage(ctx, text, layouts) {
