@@ -15,9 +15,9 @@ class EntityManagerInstance extends EntityManager
     public function __construct()
     {
         $config = new Configuration();
-        $driverImpl = ORMSetup::createDefaultAnnotationDriver(['src/Entities']);
+        $driverImpl = ORMSetup::createDefaultAnnotationDriver(['backend/Entities']);
         $config->setMetadataDriverImpl($driverImpl);
-        $config->setProxyDir('src/Proxies');
+        $config->setProxyDir('backend/Proxies');
         $config->setProxyNamespace('Backend\Proxies');
         $config->setAutoGenerateProxyClasses(false);
 

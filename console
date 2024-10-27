@@ -1,5 +1,21 @@
 #!/bin/bash
 
-docker-compose up -d
+function dev() {
+    docker-compose up -d
+    npm run dev
+}
 
-npm run dev
+function ssh() {
+    docker-compose exec php bash -c 'cd /srv/www/api && bash'
+}
+
+function doctrine-update() {
+    docker-compose exec php bash -c 'cd /srv/www/api && php backend/Console/doctrine.php orm:schema-tool:update --force --complete'
+}
+
+function mysql() {
+    docker-compose exec mysql bash -c 'mysql -uadm -padm diary'
+}
+
+
+$1 $2 $3 $4 $5

@@ -1,6 +1,6 @@
 <?php
 
-namespace LigaLazdinaPortfolio\Helpers;
+namespace Backend\Helpers;
 
 use NumberFormatter;
 
