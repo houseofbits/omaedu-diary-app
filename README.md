@@ -9,9 +9,14 @@
 * Vite
 
 ## TODO
+* Delete chapters
+* Input escape
+* Story field size
+* Validation
 * Datepicker
-* Database schema (setup)
-* Endpoint to save page in DB
+* Image upload endpoint
+* Image Entity
+* Image upload FE
 * Endpoint to save settings in DB
 * User encryption/decryption
 * Generate basic PDF
