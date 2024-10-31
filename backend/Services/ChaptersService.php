@@ -42,22 +42,23 @@ class ChaptersService
             throw new HttpException();
         }
 
-        $this->chaptersRepository->delete($chapter);
+        $this->chaptersRepository->remove($chapter);
 
         return [];
-    }    
+    }
 
     public function create(User $user, array $data): array
     {
         $chapter = new Chapter();
 
-        $chapter->setUser($user);
-        $chapter->setTitle($data['title']);
-        $chapter->setStory($data['story']);
-        $chapter->setLocation($data['location']);
-        $chapter->setCreatedAt(new DateTime($data['date']));
+        $chapter->setUser($user)
+            ->setTitle(htmlspecialchars($data['title']))
+            ->setStory(htmlspecialchars($data['story']))
+            ->setLocation(htmlspecialchars($data['location']))
+            ->setPeriod(htmlspecialchars($data['period']))
+            ->setLayouts([]);
 
-        $chapter = $this->chaptersRepository->create($chapter);
+        $chapter = $this->chaptersRepository->save($chapter);
 
         return $this->createChapterFullData($chapter);
     }
@@ -70,11 +71,13 @@ class ChaptersService
             throw new HttpException();
         }
 
-        $chapter->setTitle($data['title']);
-        $chapter->setStory($data['story']);
-        $chapter->setLocation($data['location']);
+        $chapter->setTitle(htmlspecialchars($data['title']))
+            ->setStory(htmlspecialchars($data['story']))
+            ->setLocation(htmlspecialchars($data['location']))
+            ->setPeriod(htmlspecialchars($data['period']))
+            ->setLayouts($data['layouts'] ?? []);
 
-        $chapter = $this->chaptersRepository->update($chapter);
+        $chapter = $this->chaptersRepository->save($chapter);
 
         return $this->createChapterFullData($chapter);
     }
@@ -84,7 +87,7 @@ class ChaptersService
         return [
             "id" => $chapter->getId(),
             "title" => $chapter->getTitle(),
-            "createdAt" => $chapter->getCreatedAt()->format("Y-m-d"),
+            "period" => $chapter->getPeriod(),
         ];
     }
 
@@ -95,9 +98,8 @@ class ChaptersService
             "title" => $chapter->getTitle(),
             "story" => $chapter->getStory(),
             "location" => $chapter->getLocation(),
-            "createdAt" => $chapter->getCreatedAt()->format("Y-m-d"),
-            // templates
-            // images
+            "period" => $chapter->getPeriod(),
+            "layouts" => $chapter->getLayouts(),
         ];
     }
 }

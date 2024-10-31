@@ -12,6 +12,11 @@ const backgroundColor = theme.current.value.colors.background;
 const tab = ref(null);
 const isDeleteConfirmationModalOpen = ref(false);
 
+function confirmDeletion() {
+  emit("delete");
+  isDeleteConfirmationModalOpen.value = false;
+}
+
 watch(
   () => tab.value,
   () => {
@@ -21,7 +26,7 @@ watch(
 </script>
 
 <template>
-  <v-container fluid class="bg-secondary">
+  <v-container fluid class="header-bg">
     <v-row>
       <v-col cols="2">
         <svg
@@ -50,7 +55,7 @@ watch(
           width="17.5"
           viewBox="0 0 448 512"
           class="ml-3 cursor-pointer"
-          @click="emit('delete')"
+          @click="isDeleteConfirmationModalOpen = true"
         >
           <path
             :fill="backgroundColor"
@@ -81,7 +86,7 @@ watch(
           </svg>
           <span class="mb-3">Write</span>
         </v-tab>
-        <v-tab :value="2">
+        <!-- <v-tab :value="2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24"
@@ -95,8 +100,8 @@ watch(
             />
           </svg>
           <span class="mb-3">Layout</span>
-        </v-tab>
-        <v-tab :value="3">
+        </v-tab> -->
+        <v-tab :value="2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             height="24"
@@ -116,6 +121,22 @@ watch(
   </v-container>
 
   <v-divider :thickness="1" class="border-opacity-75"></v-divider>
+
+  <v-dialog v-model="isDeleteConfirmationModalOpen" width="auto">
+    <v-card max-width="400" title="Delete chapter?">
+      <v-card-text> Please note: this action cannot be undone! </v-card-text>
+
+      <template v-slot:actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          class="ms-auto"
+          text="Cancel"
+          @click="isDeleteConfirmationModalOpen = false"
+        ></v-btn>
+        <v-btn class="ms-auto" text="Delete" @click="confirmDeletion"></v-btn>
+      </template>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style>

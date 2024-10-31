@@ -20,11 +20,15 @@ class ChaptersRepository extends EntityRepository
         return $this->findOneBy(['id' => $id]);
     }
 
-    public function create(Chapter $chapter, bool $flush = true): Chapter
+    public function save(Chapter $chapter, bool $flush = true): Chapter
     {
         $chapter->setUpdatedAt(new DateTime("now"));
 
-        $this->getEntityManager()->persist($chapter);
+        if ($chapter->getId() == null) {
+            $this->getEntityManager()->persist($chapter);
+        } else {
+            $this->getEntityManager()->merge($chapter);
+        }
 
         if ($flush) {
             $this->getEntityManager()->flush();
@@ -33,17 +37,12 @@ class ChaptersRepository extends EntityRepository
         return $chapter;
     }
 
-    public function update(Chapter $chapter, bool $flush = true): Chapter
+    public function remove(Chapter $chapter, bool $flush = true)
     {
-        $chapter->setUpdatedAt(new DateTime("now"));
-
-        $this->getEntityManager()->merge($chapter);
+        $this->getEntityManager()->remove($chapter);
 
         if ($flush) {
             $this->getEntityManager()->flush();
         }
-
-        return $chapter;
     }
 }
-;

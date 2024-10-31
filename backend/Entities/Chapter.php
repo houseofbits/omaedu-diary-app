@@ -4,9 +4,9 @@ namespace Backend\Entities;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Backend\Entities\Traits\SoftDeleteTrait;
 use Backend\Entities\Traits\TimestampableTrait;
-use Backend\Structures\SettingsStructure;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 /**
  * @ORM\Entity
@@ -15,11 +15,11 @@ use Backend\Structures\SettingsStructure;
 class Chapter
 {
     use TimestampableTrait;
-    use SoftDeleteTrait;
 
     public function __construct(
     ) {
         $this->setCreatedAt(new DateTime("now"));
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -27,13 +27,13 @@ class Chapter
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue
      */
-    protected int $id;
+    protected int|null $id = null;
 
     /**
      *  @ORM\ManyToOne(targetEntity="User") 
      *  @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    private User|null $user = null;
+    protected User|null $user = null;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
@@ -41,7 +41,7 @@ class Chapter
     protected string $title = "";
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="text")
      */
     protected string $story = "";
 
@@ -50,6 +50,22 @@ class Chapter
      */
     protected string $location = "";
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    protected string $period = "";
+
+    /**
+     * @ORM\OneToMany(targetEntity="Image", mappedBy="chapter")
+     */
+    protected Collection $images;
+
+    /**
+     * @ORM\Column(type="json", nullable=true)
+     */
+    protected ?array $layouts = null;
+
+    
     public function setId(int $id): Chapter
     {
         $this->id = $id;
@@ -80,7 +96,19 @@ class Chapter
         return $this;
     }
 
-    public function getId(): int
+    public function setPeriod(string $period): Chapter
+    {
+        $this->period = $period;
+        return $this;
+    }
+
+    public function setLayouts(array $layouts): Chapter
+    {
+        $this->layouts = $layouts;
+        return $this;
+    }
+
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -100,8 +128,26 @@ class Chapter
         return $this->location;
     }
 
+    public function getPeriod(): string
+    {
+        return $this->period;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function getLayouts(): array
+    {
+        return $this->layouts ?? [];
     }    
 }

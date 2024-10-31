@@ -21,7 +21,7 @@ import App from './App.vue'
 //       success: '#4CAF50',
 //       warning: '#FB8C00',
 //     },
-//   }  
+//   }
 
 const vuetify = createVuetify({
     components,
@@ -34,4 +34,17 @@ const vuetify = createVuetify({
     //   },    
 })
 
-createApp(App).use(vuetify).mount('#vue-app')
+createApp(App)
+    .provide('userCredentials', '8yP5aDBBnj1kS9Xxtn6akjhmUkhUTjVWWDczZUtYWkVNTDlSWVE9PQ')
+    .use(vuetify)
+    .mount('#vue-app');
+
+// const query = new URLSearchParams(window.location.search);
+
+// if (query.has('identity')) {
+//     createApp(App)
+//         .provide('userCredentials', query.get('identity'))
+//         .use(vuetify)
+//         .mount('#vue-app');
+// }
+

@@ -1,13 +1,14 @@
 <script setup>
 import SpeedDial from "./SpeedDial.vue";
-import { reactive, ref, nextTick, onMounted, getCurrentInstance } from "vue";
+import { reactive, ref, nextTick, onMounted, getCurrentInstance, watch } from "vue";
 import { useTheme } from "vuetify";
 import InformationModal from "./InformationModal.vue";
 import SettingsModal from "./SettingsModal.vue";
 
 const theme = useTheme();
-const emit = defineEmits(["add-chapter"]);
+const emit = defineEmits(["add-chapter", "update-title", "download"]);
 const props = defineProps({
+  title: String,
   isChaptersEmpty: Boolean,
 });
 
@@ -16,7 +17,7 @@ const backgroundColor = theme.current.value.colors.background;
 
 const titleTextInput = ref(null);
 const isTitleEditEnabled = ref(false);
-const title = ref("Diary title");
+const title = ref(props.title);
 const dateFrom = ref("2023-01-09");
 const dateTo = ref("2023-12-02");
 const isInfoModalOpen = ref(false);
@@ -42,19 +43,23 @@ function addChapterAndEdit() {
   emit("add-chapter");
 }
 
-onMounted(() => {
-  console.log(primaryColor);
-});
+watch(
+  () => title.value,
+  () => emit("update-title", title.value)
+);
 </script>
 
 <template>
-  <information-modal v-model="isInfoModalOpen"/>
-  <settings-modal v-model="isSetttingsModalOpen"/>
+  <information-modal v-model="isInfoModalOpen" />
+  <settings-modal v-model="isSetttingsModalOpen" />
 
-  <v-container fluid class="bg-secondary pb-8">
+  <v-container fluid class="header-bg pb-8">
     <v-row no-gutters justify="center">
       <v-col cols="2">
-        <speed-dial @click-info="isInfoModalOpen = true" @click-settings="isSetttingsModalOpen = true" />
+        <speed-dial
+          @click-info="isInfoModalOpen = true"
+          @click-settings="isSetttingsModalOpen = true"
+        />
       </v-col>
 
       <v-col
@@ -128,7 +133,7 @@ onMounted(() => {
         </div>
       </v-btn>
       <template v-else>
-        <v-btn class="mx-3">
+        <v-btn class="mx-3" @click="emit('download')">
           <template v-slot:prepend>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -144,7 +149,7 @@ onMounted(() => {
           </template>
           Download</v-btn
         >
-        <v-btn class="mx-3">
+        <!-- <v-btn class="mx-3">
           <template v-slot:prepend>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -159,7 +164,7 @@ onMounted(() => {
             </svg>
           </template>
           Send to E-mail</v-btn
-        >
+        > -->
       </template>
     </div>
 
@@ -200,4 +205,5 @@ onMounted(() => {
 .new-chapter-button {
   bottom: -30px;
 }
+
 </style>

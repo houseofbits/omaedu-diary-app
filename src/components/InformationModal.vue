@@ -27,7 +27,7 @@ watch(() => localIsOpen.value, ()=>{
       <v-card
         max-width="600"
         text="Informative message....."
-        title="Welcome to you private diary"
+        title="Welcome to your private diary"
       >
         <template v-slot:actions>
           <v-btn

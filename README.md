@@ -9,20 +9,10 @@
 * Vite
 
 ## TODO
-* Delete chapters
-* Input escape
-* Story field size
-* Validation
-* Datepicker
-* Image upload endpoint
-* Image Entity
-* Image upload FE
-* Endpoint to save settings in DB
-* User encryption/decryption
-* Generate basic PDF
-* Delete chapter option
-* Select template option
-* Perist template settings in DB
+* Add first page header
+* Add template presets
 * Use templates in PDF generation
-* Possibility to upload images
-* Use uploaded images in PDF
+* Use images in page preview
+* Use images in PDF
+
+

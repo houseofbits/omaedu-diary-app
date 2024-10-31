@@ -45,7 +45,7 @@ function selectChapter(index) {
 
         <v-list-item-title
           ><span class="mr-3 text-overline font-weight-thin">{{
-            chapter.date
+            chapter.period
           }}</span
           >{{ chapter.title }}
         </v-list-item-title>

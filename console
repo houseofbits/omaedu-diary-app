@@ -13,6 +13,14 @@ function doctrine-update() {
     docker-compose exec php bash -c 'cd /srv/www/api && php backend/Console/doctrine.php orm:schema-tool:update --force --complete'
 }
 
+function doctrine-clear() {
+    docker-compose exec php bash -c 'cd /srv/www/api && php backend/Console/doctrine.php orm:clear-cache:metadata'
+    docker-compose exec php bash -c 'cd /srv/www/api && php backend/Console/doctrine.php orm:clear-cache:query'
+    docker-compose exec php bash -c 'cd /srv/www/api && php backend/Console/doctrine.php orm:clear-cache:result'
+    docker-compose exec php bash -c 'cd /srv/www/api && php backend/Console/doctrine.php orm:clear-cache:region:collection'
+    docker-compose exec php bash -c 'cd /srv/www/api && php backend/Console/doctrine.php orm:clear-cache:region:entity'
+}
+
 function mysql() {
     docker-compose exec mysql bash -c 'mysql -uadm -padm diary'
 }

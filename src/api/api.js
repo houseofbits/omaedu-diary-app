@@ -3,13 +3,13 @@ const API_ENDPOINT = "api.php";
 const abortControllers = [];
 
 
-export async function fetchUser() {
+export async function fetchUser(userCredentials) {
   const response = await fetch(
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
       target: "user",
-      credentials: "base64encodedstr",
+      credentials: userCredentials,
     }).toString(),
     {
       method: "GET",
@@ -19,13 +19,34 @@ export async function fetchUser() {
   return await response.json();
 }
 
-export async function fetchAllChapters() {
+export async function updateUser(userCredentials, userData) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "user",
+      credentials: userCredentials,
+    }).toString(),
+    {
+      method: "POST",
+      body: JSON.stringify(userData),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  return await response.json();
+}
+
+
+export async function fetchAllChapters(userCredentials) {
   const response = await fetch(
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
       target: "chapters",
-      credentials: "base64encodedstr",
+      credentials: userCredentials,
     }).toString(),
     {
       method: "GET",
@@ -35,13 +56,13 @@ export async function fetchAllChapters() {
   return await response.json();
 }
 
-export async function fetchChapter(id) {
+export async function fetchChapter(userCredentials, id) {
   const response = await fetch(
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
       target: "chapters",
-      credentials: "base64encodedstr",
+      credentials: userCredentials,
       id
     }).toString(),
     {
@@ -52,13 +73,13 @@ export async function fetchChapter(id) {
   return await response.json();
 }
 
-export async function deleteChapter(id) {
+export async function deleteChapter(userCredentials, id) {
   const response = await fetch(
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
       target: "chapters",
-      credentials: "base64encodedstr",
+      credentials: userCredentials,
       id
     }).toString(),
     {
@@ -69,13 +90,13 @@ export async function deleteChapter(id) {
   return await response.json();
 }
 
-export async function postChapter(chapter) {
+export async function postChapter(userCredentials, chapter) {
   const response = await fetch(
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
       target: "chapters",
-      credentials: "base64encodedstr",
+      credentials: userCredentials,
     }).toString(),
     {
       method: "POST",
@@ -89,13 +110,13 @@ export async function postChapter(chapter) {
   return await response.json();
 }
 
-export async function putChapter(chapter) {
+export async function putChapter(userCredentials, chapter) {
 
   const url = API_ENDPOINT +
     "?" +
     new URLSearchParams({
       target: "chapters",
-      credentials: "base64encodedstr",
+      credentials: userCredentials,
       id: chapter.id,
     }).toString();
 
@@ -121,3 +142,70 @@ export async function putChapter(chapter) {
   }
 }
 
+export async function postChapterImage(userCredentials, chapterId, file) {
+
+  const url = API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "images",
+      credentials: userCredentials,
+      id: chapterId,
+    }).toString();
+
+  var data = new FormData();
+  data.append('file', file);
+
+  const response = await fetch(
+    url,
+    {
+      method: "POST",
+      body: data,
+    }
+  );
+
+  return await response.json();
+}
+
+export async function deleteChapterImage(userCredentials, imageId) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "images",
+      credentials: userCredentials,
+      id: imageId
+    }).toString(),
+    {
+      method: "DELETE",
+    }
+  );
+
+  return await response.json();
+}
+
+export async function fetchChapterImages(userCredentials, chapterId) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "images",
+      credentials: userCredentials,
+      id: chapterId
+    }).toString(),
+    {
+      method: "GET",
+    }
+  );
+
+  return await response.json();
+}
+
+export function imageUrl(userCredentials, imageId) {
+  return API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "img",
+      credentials: userCredentials,
+      id: imageId,
+    }).toString();
+}
