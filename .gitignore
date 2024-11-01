@@ -27,3 +27,4 @@ package-lock.json
 composer.lock
 vendor
 .vscode
+public/uploads
