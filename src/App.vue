@@ -15,7 +15,9 @@ import {
 import PdfBuilder from "./helpers/PdfBuilder";
 import convertHEXToRGBA from "./helpers/convertHEXToRGBA";
 import { useTheme } from "vuetify";
+import useErrorStack from "./composables/ErrorStack";
 
+const { errorMessages, addErrorMessage } = useErrorStack();
 const theme = useTheme();
 const secondaryColor = theme.current.value.colors.secondary;
 
@@ -24,6 +26,10 @@ let user = ref(null);
 const chapters = reactive([]);
 const selectedChapter = ref(null);
 const pdfBuilder = new PdfBuilder();
+const isErrorVisible = ref(true);
+const errorMessage = ref(
+  "Failed to save the chapter. Try to refresh the page and if the problem persists please contact the technical support."
+);
 
 async function selectChapter(index) {
   let chapterData = await fetchChapter(userCredentials, chapters[index].id);
@@ -47,54 +53,88 @@ async function addChapterAndEdit() {
     layouts: [],
   };
 
-  const chapterData = await postChapter(userCredentials, data);
-  data.id = chapterData.id;
+  try {
+    const chapterData = await postChapter(userCredentials, data);
+    data.id = chapterData.id;
 
-  chapters.push(data);
-  selectedChapter.value = chapters.length - 1;
+    chapters.push(data);
+    selectedChapter.value = chapters.length - 1;
+  } catch (error) {
+    addErrorMessage(
+      "Failed to add new chapter. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
 }
 
 async function updateChapter(chapter) {
   chapters[selectedChapter.value] = chapter;
 
-  await putChapter(userCredentials, chapter);
+  try {
+    await putChapter(userCredentials, chapter);
+  } catch (error) {
+    addErrorMessage(
+      "Failed to update chapter. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
 }
 
 async function onDeleteChapter(chapterId) {
-  await deleteChapter(userCredentials, chapterId);
-  selectedChapter.value = null;
-  const index = chapters.findIndex((chapter) => chapter.id === chapterId);
-  if (index >= 0) {
-    chapters.splice(index, 1);
+  try {
+    await deleteChapter(userCredentials, chapterId);
+    selectedChapter.value = null;
+    const index = chapters.findIndex((chapter) => chapter.id === chapterId);
+    if (index >= 0) {
+      chapters.splice(index, 1);
+    }
+  } catch (error) {
+    addErrorMessage(
+      "Failed to remove chapter. Try to refresh the page and if the problem persists please contact the technical support."
+    );
   }
 }
 
 async function updateTitle(title) {
   user.value.diaryTitle = title;
 
-  await updateUser(userCredentials, user.value);
+  try {
+    await updateUser(userCredentials, user.value);
+  } catch (error) {
+    addErrorMessage(
+      "Failed to update title. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
 }
 
 onMounted(async () => {
-  let chaptersData = await fetchAllChapters(userCredentials);
-  chaptersData = chaptersData.map((chapter) => {
-    return {
-      id: chapter.id,
-      title: chapter.title,
-      period: chapter.period,
-      location: "",
-      story: "",
-      layouts: [],
-    };
-  });
+  try {
+    let chaptersData = await fetchAllChapters(userCredentials);
+    chaptersData = chaptersData.map((chapter) => {
+      return {
+        id: chapter.id,
+        title: chapter.title,
+        period: chapter.period,
+        location: "",
+        story: "",
+        layouts: [],
+      };
+    });
 
-  chapters.length = 0;
-  chapters.push(...chaptersData);
+    chapters.length = 0;
+    chapters.push(...chaptersData);
+  } catch (error) {
+    addErrorMessage(
+      "Failed to load list of chapters. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
 
-  const userData = await fetchUser(userCredentials);
-  user.value = userData;
-
-  console.log(secondaryColor);
+  try {
+    const userData = await fetchUser(userCredentials);
+    user.value = userData;
+  } catch (error) {
+    addErrorMessage(
+      "Failed to load user data. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
 });
 
 async function createPdf() {
@@ -104,10 +144,14 @@ async function createPdf() {
 
 const cssThemeProps = computed(() => {
   return {
-    '--header-gradient-start': convertHEXToRGBA(secondaryColor, 100),
-    '--header-gradient-end': convertHEXToRGBA(secondaryColor, 50),
+    "--header-gradient-start": convertHEXToRGBA(secondaryColor, 100),
+    "--header-gradient-end": convertHEXToRGBA(secondaryColor, 50),
   };
 });
+
+function calculateSnackbarMargin(i) {
+  return i * 60 + "px";
+}
 </script>
 
 <template>
@@ -131,10 +175,25 @@ const cssThemeProps = computed(() => {
       <chapters :chapters="chapters" @select="selectChapter" />
     </template>
   </v-app>
+
+  <v-snackbar
+    v-for="(message, i) in errorMessages"
+    :style="{ 'margin-bottom': calculateSnackbarMargin(i) }"
+    :key="i"
+    v-model="isErrorVisible"
+    :timeout="-1"
+    color="red-darken-3"
+  >
+    {{ message.text }}
+  </v-snackbar>
 </template>
 
 <style>
 .header-bg {
-  background: linear-gradient(0deg, var(--header-gradient-end) 0%, var(--header-gradient-start) 100%);
+  background: linear-gradient(
+    0deg,
+    var(--header-gradient-end) 0%,
+    var(--header-gradient-start) 100%
+  );
 }
 </style>

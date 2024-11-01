@@ -26,7 +26,7 @@ $router->POST('user', function ($request, $response) {
 //All chapters
 $router->GET('chapters', function ($request, $response) {
     $chaptersService = Application::get(ChaptersService::class);
-    $response->toJSON($chaptersService->getAll($request->user));
+    $response->toJSON($chaptersService->getAll($request->user));    
 }, false);
 
 //Single chapter

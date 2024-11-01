@@ -1,17 +1,25 @@
 import Rect from "./Rect";
 
 export default class PageLayout {
-    constructor(columns, regions) {
-        this.columns = columns || [new Rect(0, 0, 595, 842, 56, 56, 56, 56)];
-        this.imageRegions = regions || [];
+    constructor() {
+        this.columns = [];
+        this.imageRegions = [];
     }
 
-    addColumn(x, y, width, height) {
-        this.columns.push(new Rect(x, y, width, height));
+    static createDefault() {
+        return (new PageLayout()).addColumn(0, 0, 595, 842, 56, 56, 56, 56);
     }
 
-    addImageRegion(x, y, width, height) {
-        this.imageRegions.push(new Rect(x, y, width, height));
+    addColumn(x, y, width, height, ml, mr, mt, mb) {
+        this.columns.push(new Rect(x, y, width, height, mr, ml, mt, mb));
+
+        return this;
+    }
+
+    addImageRegion(x, y, width, height, ml, mr, mt, mb) {
+        this.imageRegions.push(new Rect(x, y, width, height, mr, ml, mt, mb));
+
+        return this;
     }
 
     getAvailableLineSegments(column, linePosY) {
@@ -79,6 +87,11 @@ export default class PageLayout {
             ctx.rect(this.imageRegions[i].getX(), this.imageRegions[i].getY(), this.imageRegions[i].getWidth(), this.imageRegions[i].getHeight());
             ctx.setLineDash([6]);
             ctx.stroke();
+
+            ctx.beginPath();
+            ctx.rect(this.imageRegions[i].getInnerX(), this.imageRegions[i].getInnerY(), this.imageRegions[i].getInnerWidth(), this.imageRegions[i].getInnerHeight());
+            ctx.setLineDash([6]);
+            ctx.stroke();            
         }
     }
 };

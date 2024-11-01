@@ -4,11 +4,11 @@ import Rect from "../helpers/Rect";
 
 export const PAGE_LAYOUTS = {
     'default': {
-        layout: new PageLayout(),
+        layout: PageLayout.createDefault(),
         image: '',
     },
     'l1': {
-        layout: new PageLayout(null, [new Rect(56, 300, 200, 200)]),
+        layout: PageLayout.createDefault().addImageRegion(56, 300, 200, 200, 20, 0, 20, 20),
         image: '',
-    }    
+    }
 };

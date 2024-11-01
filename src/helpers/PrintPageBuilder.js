@@ -3,6 +3,8 @@ import PrintPage from "./PrintPage";
 const LINE_HEIGHT = 21;
 const FONT_SIZE = 12;
 const PAGE_NUM_FONT_SIZE = 10;
+const HEADER_FONT_SIZE = 20;
+const SUB_HEADER_FONT_SIZE = 10;
 
 export default class PrintPageBuilder {
     constructor() {
@@ -15,6 +17,7 @@ export default class PrintPageBuilder {
         this.title = "";
         this.date = "";
         this.location = "";
+        this.imageUrls = [];
     }
 
     enableHeader(isEnabled) {
@@ -27,6 +30,10 @@ export default class PrintPageBuilder {
 
     setText(text) {
         this.remainingText = text;
+    }
+
+    setImages(imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     setHeader(title, date, location) {
@@ -56,6 +63,8 @@ export default class PrintPageBuilder {
         if (this.isGeneratePageNumberEnabled) {
             this.addPageNumber();
         }
+
+        this.addImages(layout.imageRegions);
     }
 
     buildColumn(layout, column) {
@@ -82,40 +91,34 @@ export default class PrintPageBuilder {
             return;
         }
 
-        let previousValidBreakIndex = 0;
-        for (let i = 0; i < this.remainingText.length; i++) {
-            if (this.remainingText.at(i) === '\n') {
-                if (i > 0) {
-                    this.page.addTextFragment(x, y, this.remainingText.substring(0, i), FONT_SIZE);
-                }
-                this.remainingText = this.remainingText.slice(i + 1);
-
-                return;
-            }
-
-            const lineText = this.remainingText.substring(0, i);
-            const lineWidth = this.measureWidth(lineText, FONT_SIZE);
-
-            if (this.remainingText.at(i) === " " && lineWidth <= width) {
-                previousValidBreakIndex = i + 1;
-            }
-            if (lineWidth > width && previousValidBreakIndex > 0) {
-                this.page.addTextFragment(x, y, this.remainingText.substring(0, previousValidBreakIndex), FONT_SIZE);
-                this.remainingText = this.remainingText.slice(previousValidBreakIndex);
-
-                return;
-            }
-        }
-
-        const lineWidth = this.measureWidth(this.remainingText, FONT_SIZE);
-        if (lineWidth <= width) {
-            this.page.addTextFragment(x, y, this.remainingText, FONT_SIZE);
-            this.remainingText = "";
+        const { line, remaining } = this.generateTextLine(this.remainingText, width, FONT_SIZE);
+        this.remainingText = remaining;
+        if (line.length > 0) {
+            this.page.addTextFragment(x, y, line, FONT_SIZE);
         }
     }
 
     addHeader() {
+        let posY = 56;
+        let title = this.title;
+        while (true) {
+            const { line, remaining } = this.generateTextLine(title, 483, HEADER_FONT_SIZE);
+            if (line.length > 0) {
+                title = remaining;
+                this.page.addTextFragment(56, posY, line, HEADER_FONT_SIZE);
 
+                posY = posY + (HEADER_FONT_SIZE * 1.3);
+            } else {
+                break;
+            }
+        }
+
+        const dateWidth = this.measureWidth(this.date, SUB_HEADER_FONT_SIZE);
+
+        this.page.addTextFragment(56, posY, this.location, SUB_HEADER_FONT_SIZE);
+        this.page.addTextFragment(595 - 56 - dateWidth, posY, this.date, SUB_HEADER_FONT_SIZE);
+
+        this.textStart = posY + SUB_HEADER_FONT_SIZE * 2;
     }
 
     addPageNumber() {
@@ -127,5 +130,73 @@ export default class PrintPageBuilder {
 
     measureWidth(text, fontSize) {
         return 0;
+    }
+
+    addImages(imageRegions) {
+        if (imageRegions.length === 0) {
+            return;
+        }
+
+        for (let i = 0; i < imageRegions.length; i++) {
+            const region = imageRegions[i];
+            if (this.imageUrls.length > 0) {
+                const imageUrl = this.imageUrls.shift();
+                this.page.addImageFragment(region.getInnerX(),
+                    region.getInnerY(),
+                    region.getInnerWidth(),
+                    region.getInnerHeight(),
+                    imageUrl);
+            }
+        }
+    }
+
+    generateTextLine(text, width, fontSize) {
+        let previousValidBreakIndex = 0;
+        for (let i = 0; i < text.length; i++) {
+            if (text.at(i) === '\n') {
+                let line = "";
+                if (i > 0) {
+                    line = text.substring(0, i);
+                }
+                text = text.slice(i + 1);
+
+                return {
+                    line,
+                    remaining: text
+                };
+            }
+
+            const lineText = text.substring(0, i);
+            const lineWidth = this.measureWidth(lineText, fontSize);
+
+            if (text.at(i) === " " && lineWidth <= width) {
+                previousValidBreakIndex = i + 1;
+            }
+            if (lineWidth > width && previousValidBreakIndex > 0) {
+                let line = text.substring(0, previousValidBreakIndex);
+                text = text.slice(previousValidBreakIndex);
+
+                return {
+                    line,
+                    remaining: text
+                };
+            }
+        }
+
+        const lineWidth = this.measureWidth(text, fontSize);
+        if (lineWidth <= width) {
+            let line = text;
+            text = "";
+
+            return {
+                line,
+                remaining: text
+            };
+        }
+
+        return {
+            line: "",
+            remaining: ""
+        };
     }
 };

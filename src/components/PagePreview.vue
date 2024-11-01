@@ -7,6 +7,7 @@ import LayoutsModal from "./LayoutsModal.vue";
 
 const props = defineProps({
   chapter: Object,
+  images: Array,
 });
 
 const emit = defineEmits(["change-layouts"]);
@@ -25,10 +26,11 @@ function renderPage(ctx, text) {
 
   const pageBuilder = new CanvasPrintPageBuilder(ctx);
   pageBuilder.setText(text);
-  pageBuilder.addHeader(
-    props.chapter.title,
-    props.chapter.date,
-    props.chapter.location
+  pageBuilder.setImages(props.images);
+  pageBuilder.setHeader(
+    props.chapter.title ?? "",
+    props.chapter.period ?? "",
+    props.chapter.location ?? ""
   );
 
   let currentLayout = null;
@@ -50,6 +52,7 @@ function renderPage(ctx, text) {
   ctx.reset();
   const canvasPrintPageRenderer = new CanvasPrintPageRenderer();
   canvasPrintPageRenderer.renderText(ctx, pageBuilder.page);
+  canvasPrintPageRenderer.renderImages(ctx, pageBuilder.page);
   canvasPrintPageRenderer.renderLayout(ctx, currentLayout);
 }
 

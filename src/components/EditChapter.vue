@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watch, onMounted, inject } from "vue";
+import { ref, reactive, watch, onMounted, inject, computed } from "vue";
 import { clone, set } from "lodash";
 import EditChapterHeader from "./EditChapterHeader.vue";
 import PagePreview from "./PagePreview.vue";
@@ -40,7 +40,7 @@ function emitUpdatedChapter() {
   emit("update", chapter);
 }
 
-const handleUpdateDebounced = _.debounce(emitUpdatedChapter, 500);
+const handleUpdateDebounced = _.debounce(emitUpdatedChapter, 1);
 
 function requiredValidationRule(value) {
   return !!value || "Required.";
@@ -51,21 +51,33 @@ function triggerUpload() {
 }
 
 async function deleteImage(id) {
-  await deleteChapterImage(userCredentials, id);
-  const index = images.findIndex((image) => image.id === id);
-  if (index >= 0) {
-    images.splice(index, 1);
+  try {
+    await deleteChapterImage(userCredentials, id);
+    const index = images.findIndex((image) => image.id === id);
+    if (index >= 0) {
+      images.splice(index, 1);
+    }
+  } catch (error) {
+    addErrorMessage(
+      "Failed to remove image. Try to refresh the page and if the problem persists please contact the technical support."
+    );
   }
 }
 
 async function uploadImage() {
-  const imageData = await postChapterImage(
-    userCredentials,
-    props.chapter.id,
-    fileInput.value.files[0]
-  );
+  try {
+    const imageData = await postChapterImage(
+      userCredentials,
+      props.chapter.id,
+      fileInput.value.files[0]
+    );
 
-  images.push(imageData);
+    images.push(imageData);
+  } catch (error) {
+    addErrorMessage(
+      "Failed to upload image. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
 }
 
 function getImageUrl(imageId) {
@@ -102,13 +114,25 @@ watch(
   }
 );
 
+const imageUrls = computed(() => {
+  return images.map((image) => {
+    return imageUrl(userCredentials, image.id);
+  });
+});
+
 onMounted(async () => {
-  const imagesData = await fetchChapterImages(
-    userCredentials,
-    props.chapter.id
-  );
-  images.length = 0;
-  images.push(...imagesData);
+  try {
+    const imagesData = await fetchChapterImages(
+      userCredentials,
+      props.chapter.id
+    );
+    images.length = 0;
+    images.push(...imagesData);
+  } catch (error) {
+    addErrorMessage(
+      "Failed to load chapter images. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
 });
 </script>
 
@@ -205,19 +229,8 @@ onMounted(async () => {
       </v-sheet>
     </v-tabs-window-item>
 
-    <!-- <v-tabs-window-item :key="2" :value="2">
-      <v-sheet
-        class="pa-4 text-center mx-auto"
-        elevation="3"
-        max-width="800"
-        width="100%"
-        height="100%"
-      >
-      </v-sheet>
-    </v-tabs-window-item> -->
-
     <v-tabs-window-item :key="2" :value="2">
-      <page-preview :chapter="chapter" @change-layouts="updateLayouts"/>
+      <page-preview :chapter="chapter" :images="imageUrls" @change-layouts="updateLayouts" />
     </v-tabs-window-item>
   </v-tabs-window>
 

@@ -9,10 +9,7 @@
 * Vite
 
 ## TODO
-* Add first page header
-* Add template presets
-* Use templates in PDF generation
 * Use images in page preview
 * Use images in PDF
-
-
+* Add template presets
+* Issue with line mismatch between preview and pdf

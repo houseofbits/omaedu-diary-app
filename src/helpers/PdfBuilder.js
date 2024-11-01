@@ -6,6 +6,7 @@ import PageLayout from "./PageLayout";
 import {
     fetchChapter,
 } from "./../api/api.js";
+import { PAGE_LAYOUTS } from "../constants/pageLayouts";
 
 export default class PdfBuilder {
 
@@ -25,18 +26,30 @@ export default class PdfBuilder {
         this.pdfBuilder = new PdfPrintPageBuilder(this.pdfDocument, this.pdfFont);
         this.pdfRenderer = new PdfPrintPageRenderer();
 
-        const layout = new PageLayout();
+        const defaultLayout = PageLayout.createDefault();
 
         for (let i = 0; i < chapters.length; i++) {
             const chapterData = await fetchChapter(userCredentials, chapters[i].id);
 
             this.pdfBuilder.setText(chapterData.story);
+            this.pdfBuilder.setHeader(
+                chapterData.title ?? "",
+                chapterData.period ?? "",
+                chapterData.location ?? ""
+            );
+
+            let chapterPageNum = 0;
+            let layoutName = chapterData.layouts[chapterPageNum] ?? "default";
 
             //First page
-            this.createChapterFirstPage(layout, chapterData);
+            this.pdfBuilder.enableHeader(true);
+            this.createChapterFirstPage(PAGE_LAYOUTS[layoutName]?.layout ?? defaultLayout);
 
             while (this.pdfBuilder.hasTextRemaining()) {
-                this.createPage(layout);
+                chapterPageNum++;
+                layoutName = chapterData.layouts[chapterPageNum] ?? "default";
+                this.pdfBuilder.enableHeader(false);
+                this.createPage(PAGE_LAYOUTS[layoutName]?.layout ?? defaultLayout);
             }
         }
 
@@ -62,6 +75,7 @@ export default class PdfBuilder {
         this.pdfBuilder.setPageNumber(this.pageNum);
         this.pdfBuilder.buildPage(layout);
         const pdfPage = this.pdfDocument.addPage();
+
         this.pdfRenderer.renderText(this.pdfBuilder.page, pdfPage, this.pdfFont);
 
         //Add images

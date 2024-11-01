@@ -138,7 +138,9 @@ export async function putChapter(userCredentials, chapter) {
 
     return await response.json();
   } catch (error) {
-
+    if (error.name !== 'AbortError') {
+      throw error;
+    }
   }
 }
 

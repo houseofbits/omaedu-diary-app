@@ -1,9 +1,13 @@
 export default class ImageFragment {
-    constructor(x, y) {
-        this.positionTop = x;
-        this.positionLeft = y;
-        this.width = 0;
-        this.height = 0;
-        this.imageId = 0;
+    constructor(x, y, width, height, url) {
+        this.y = y;
+        this.x = x;
+        this.width = width;
+        this.height = height;
+        this.url = url;
+    }
+
+    getAspect() {
+        return this.height / this.width;
     }
 };

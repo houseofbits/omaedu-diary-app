@@ -12,4 +12,10 @@ export default class PrintPage {
 
         return this.textFragments[l - 1];
     }
+
+    addImageFragment(x, y, width, height, url) {
+        const l = this.imageFragments.push(new ImageFragment(x, y, width, height, url));
+
+        return this.imageFragments[l - 1];
+    }
 };
