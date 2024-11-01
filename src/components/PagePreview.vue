@@ -4,6 +4,7 @@ import CanvasPrintPageBuilder from "../helpers/CanvasPrintPageBuilder";
 import CanvasPrintPageRenderer from "../helpers/CanvasPrintPageRenderer";
 import { PAGE_LAYOUTS } from "../constants/pageLayouts";
 import LayoutsModal from "./LayoutsModal.vue";
+import _ from "lodash";
 
 const props = defineProps({
   chapter: Object,
@@ -26,7 +27,7 @@ function renderPage(ctx, text) {
 
   const pageBuilder = new CanvasPrintPageBuilder(ctx);
   pageBuilder.setText(text);
-  pageBuilder.setImages(props.images);
+  pageBuilder.setImages(_.cloneDeep(props.images));
   pageBuilder.setHeader(
     props.chapter.title ?? "",
     props.chapter.period ?? "",
