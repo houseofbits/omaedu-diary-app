@@ -1,11 +1,9 @@
 import { computed, reactive, ref } from "vue";
 
+const errorMessages = reactive([]);
+let lastMessageId = 0;
 
 export default function useErrorStack() {
-
-    const errorMessages = reactive([]);
-    let lastMessageId = 0;
-
     function addErrorMessage(message) {
         errorMessages.push({
             id: lastMessageId,

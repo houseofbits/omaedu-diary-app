@@ -59,7 +59,7 @@ async function deleteImage(id) {
     if (index >= 0) {
       images.splice(index, 1);
     }
-  } catch (error) {
+  } catch (error) {    
     addErrorMessage(
       "Failed to remove image. Try to refresh the page and if the problem persists please contact the technical support."
     );
