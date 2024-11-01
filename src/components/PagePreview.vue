@@ -71,7 +71,7 @@ function removeTemplate() {
 }
 
 function addPageRight() {
-  layouts.splice(previewPageNum.value, 0, "default");
+  layouts.splice(previewPageNum.value + 1, 0, "default");
   previewPageNum.value = previewPageNum.value + 1;
   isLayoutsModalVisible.value = true;
   emit("change-layouts", layouts);
@@ -79,7 +79,7 @@ function addPageRight() {
 
 function addPageLeft() {
   if (previewPageNum.value > 0) {
-    layouts.splice(previewPageNum.value - 1, 0, "default");
+    layouts.splice(previewPageNum.value, 0, "default");
     previewPageNum.value = previewPageNum.value;
     isLayoutsModalVisible.value = true;
     emit("change-layouts", layouts);
@@ -226,7 +226,7 @@ onMounted(() => {
                 block
                 :disabled="previewPageNum == 0"
                 @click="removeTemplate"
-                >Delete page</v-btn
+                >Delete layout</v-btn
               >
             </v-list-item>
           </v-list>

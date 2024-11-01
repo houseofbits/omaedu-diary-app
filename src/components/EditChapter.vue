@@ -11,7 +11,9 @@ import {
   imageUrl,
 } from "../api/api.js";
 import _ from "lodash";
+import useErrorStack from "../composables/ErrorStack";
 
+const { addErrorMessage } = useErrorStack();
 const userCredentials = inject("userCredentials");
 const theme = useTheme();
 const primaryColor = theme.current.value.colors.primary;
