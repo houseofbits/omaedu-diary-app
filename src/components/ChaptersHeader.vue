@@ -1,6 +1,13 @@
 <script setup>
 import SpeedDial from "./SpeedDial.vue";
-import { reactive, ref, nextTick, onMounted, getCurrentInstance, watch } from "vue";
+import {
+  reactive,
+  ref,
+  nextTick,
+  onMounted,
+  getCurrentInstance,
+  watch,
+} from "vue";
 import { useTheme } from "vuetify";
 import InformationModal from "./InformationModal.vue";
 import SettingsModal from "./SettingsModal.vue";
@@ -11,6 +18,7 @@ const props = defineProps({
   title: String,
   datePeriod: String,
   isChaptersEmpty: Boolean,
+  isPdfGenerating: Boolean
 });
 
 const primaryColor = theme.current.value.colors.primary;
@@ -128,8 +136,12 @@ watch(
         </div>
       </v-btn>
       <template v-else>
-        <v-btn class="mx-3" @click="emit('download')">
-          <template v-slot:prepend>
+        <v-btn
+          class="mx-3"
+          @click="emit('download')"
+          :disabled="isPdfGenerating"
+        >
+          <template v-slot:prepend v-if="!isPdfGenerating">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               height="20"
@@ -142,6 +154,15 @@ watch(
               />
             </svg>
           </template>
+
+          <v-progress-circular
+            v-if="isPdfGenerating"
+            model-value="15"
+            :width="5"
+            color="primary"
+            indeterminate
+          ></v-progress-circular>
+
           Download</v-btn
         >
         <!-- <v-btn class="mx-3">
@@ -200,5 +221,4 @@ watch(
 .new-chapter-button {
   bottom: -30px;
 }
-
 </style>

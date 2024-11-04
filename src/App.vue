@@ -27,6 +27,7 @@ const chapters = reactive([]);
 const selectedChapter = ref(null);
 const pdfBuilder = new PdfBuilder();
 const isErrorVisible = ref(true);
+const isPdfGenerating = ref(false);
 const errorMessage = ref(
   "Failed to save the chapter. Try to refresh the page and if the problem persists please contact the technical support."
 );
@@ -146,8 +147,12 @@ onMounted(async () => {
 });
 
 async function createPdf() {
+  isPdfGenerating.value = true;
+
   const pdfDocument = await pdfBuilder.build(userCredentials, chapters);
   await pdfBuilder.download(pdfDocument);
+
+  isPdfGenerating.value = false;
 }
 
 const cssThemeProps = computed(() => {
@@ -181,6 +186,7 @@ function calculateSnackbarMargin(i) {
         :title="user.diaryTitle"
         :date-period="datePeriod"
         :is-chapters-empty="chapters.length == 0"
+        :is-pdf-generating="isPdfGenerating"
         @add-chapter="addChapterAndEdit"
         @update-title="updateTitle"
         @download="createPdf"

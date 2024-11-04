@@ -67,6 +67,6 @@ export default class CanvasPrintPageRenderer {
             ctx.fillRect(layout.imageRegions[i].getInnerX(), layout.imageRegions[i].getInnerY(), layout.imageRegions[i].getInnerWidth(), layout.imageRegions[i].getInnerHeight());
         }
 
-        layout.drawDebugBorders(ctx);
+        // layout.drawDebugBorders(ctx);
     }
 };

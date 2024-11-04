@@ -2,5 +2,25 @@
 
 @font-face {
     font-family: 'Calibri';
-    src: url('/dist/assets/calibri.ttf');
+    src: url('/assets/fonts/calibri.ttf');
+}
+
+@font-face {
+    font-family: 'Cambria';
+    src: url('/assets/fonts/cambria.ttf');
+}
+
+@font-face {
+    font-family: 'Candara';
+    src: url('/assets/fonts/candara.ttf');
+}
+
+@font-face {
+    font-family: 'Consola';
+    src: url('/assets/fonts/consola.ttf');
+}
+
+@font-face {
+    font-family: 'Corbel';
+    src: url('/assets/fonts/corbel.ttf');
 }

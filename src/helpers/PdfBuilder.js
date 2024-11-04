@@ -23,7 +23,7 @@ export default class PdfBuilder {
     async build(userCredentials, chapters) {
         this.pageNum = 1;
         this.pdfDocument = await PDFDocument.create();
-        this.pdfFont = await this.loadFont('/dist/assets/calibri.ttf');
+        this.pdfFont = await this.loadFont('/assets/fonts/calibri.ttf');
 
         this.pdfBuilder = new PdfPrintPageBuilder(this.pdfDocument, this.pdfFont);
         this.pdfRenderer = new PdfPrintPageRenderer();
