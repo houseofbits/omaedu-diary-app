@@ -39,7 +39,7 @@ function renderPage(ctx, text) {
     const layoutData = PAGE_LAYOUTS[layouts[i]];
     currentLayout = layoutData.layout;
 
-    pageBuilder.enableHeader(previewPageNum.value === 0);
+    pageBuilder.enableHeader(i === 0);
     pageBuilder.setPageNumber(previewPageNum.value + 1);
     pageBuilder.buildPage(layoutData.layout);
 
@@ -129,7 +129,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-sheet class="mt-4 text-center mx-auto" max-width="800">
+  <v-sheet class="preview-sheet mt-4 text-center mx-auto" max-width="800">
     <v-row>
       <v-col class="d-flex justify-center align-start flex-column" cols="1">
         <v-btn
@@ -257,7 +257,11 @@ onMounted(() => {
     </v-row>
   </v-sheet>
 
-  <layouts-modal v-model="isLayoutsModalVisible" @select="selectLayout" />
+  <layouts-modal
+    v-model="isLayoutsModalVisible"
+    :is-first-page="previewPageNum === 0"
+    @select="selectLayout"
+  />
 </template>
 
 <style>
@@ -265,5 +269,10 @@ onMounted(() => {
   /* border: solid 1px blue; */
   width: 100%;
   border-radius: 8px;
+  background-color: white;
+}
+
+.preview-sheet {
+  background: none !important;
 }
 </style>

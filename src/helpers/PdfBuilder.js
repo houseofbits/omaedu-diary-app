@@ -5,6 +5,8 @@ import PdfPrintPageRenderer from "./PdfPrintPageRenderer";
 import PageLayout from "./PageLayout";
 import {
     fetchChapter,
+    fetchChapterImages,
+    imageUrl
 } from "./../api/api.js";
 import { PAGE_LAYOUTS } from "../constants/pageLayouts";
 
@@ -30,7 +32,9 @@ export default class PdfBuilder {
 
         for (let i = 0; i < chapters.length; i++) {
             const chapterData = await fetchChapter(userCredentials, chapters[i].id);
+            const imageUrls = await this.loadImages(userCredentials, chapters[i].id);
 
+            this.pdfBuilder.setImages(imageUrls);
             this.pdfBuilder.setText(chapterData.story);
             this.pdfBuilder.setHeader(
                 chapterData.title ?? "",
@@ -77,9 +81,7 @@ export default class PdfBuilder {
         const pdfPage = this.pdfDocument.addPage();
 
         this.pdfRenderer.renderText(this.pdfBuilder.page, pdfPage, this.pdfFont);
-
-        //Add images
-
+        this.pdfRenderer.renderImages(this.pdfBuilder.page, pdfPage);
 
         this.pageNum++;
 
@@ -90,5 +92,14 @@ export default class PdfBuilder {
         const fontBytes = await fetch(fontUrl).then(res => res.arrayBuffer())
         this.pdfDocument.registerFontkit(fontKit);
         return await this.pdfDocument.embedFont(fontBytes);
+    }
+
+    async loadImages(userCredentials, chapterId) {
+        const imagesData = await fetchChapterImages(
+            userCredentials,
+            chapterId
+        );
+
+        return imagesData.map((image) => imageUrl(userCredentials, image.id));
     }
 };

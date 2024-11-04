@@ -28,3 +28,4 @@ composer.lock
 vendor
 .vscode
 public/uploads
+uploads

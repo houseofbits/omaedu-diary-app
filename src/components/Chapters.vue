@@ -68,3 +68,15 @@ function selectChapter(index) {
   </v-container>
 </template>
 
+<style>
+.v-list-subheader,
+.v-list {
+  background: none !important;
+}
+.v-list-item {
+  background: white;
+  margin-top: 6px;
+  border-radius: 6px !important;
+  padding-right: 12px !important;
+}
+</style>

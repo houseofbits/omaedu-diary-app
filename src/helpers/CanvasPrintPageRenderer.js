@@ -1,6 +1,6 @@
 
 
-export default class CanvasPrintPageRenderer {
+export default class CanvasPrintPageRenderer {   
     renderText(ctx, page) {
         ctx.font = "12pt Calibri";
         ctx.fillStyle = "black";
@@ -26,23 +26,47 @@ export default class CanvasPrintPageRenderer {
             const imgAspect = img.height / img.width;
             const destAspect = fragment.getAspect();
 
-            let imgWidth = img.width;
-            let imgHeight = img.height;
+            // let imgWidth = img.width;
+            // let imgHeight = img.height;
+            // let imgX = 0;
+            // let imgY = 0;
+            // if (imgAspect > destAspect) {
+            //     imgHeight = imgWidth * destAspect;
+            //     imgY = (img.height - imgHeight) * 0.5;
+            // } else {
+            //     imgWidth = imgHeight / destAspect;
+            //     imgX = (img.width - imgWidth) * 0.5;
+            // }
+
+            // ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight, fragment.x, fragment.y, fragment.width, fragment.height);
+
+            let targetWidth = img.width;
+            let targetHeight = img.height;
             let imgX = 0;
             let imgY = 0;
             if (imgAspect > destAspect) {
-                imgHeight = imgWidth * destAspect;
-                imgY = (img.height - imgHeight) * 0.5;
+                targetWidth = fragment.height / imgAspect;
+                targetHeight = fragment.height;
             } else {
-                imgWidth = imgHeight / destAspect;
-                imgX = (img.width - imgWidth) * 0.5;
+                targetWidth = fragment.height;
+                targetHeight = fragment.height * imgAspect;
             }
 
-            ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight, fragment.x, fragment.y, fragment.width, fragment.height);
+            ctx.drawImage(img, imgX, imgY, img.width, img.height, fragment.x, fragment.y,
+                targetWidth,
+                targetHeight
+            );
         }
     }
 
     renderLayout(ctx, layout) {
-        layout.drawDebugBorders(ctx);
+
+        for (let i = 0; i < layout.imageRegions.length; i++) {
+
+            ctx.fillStyle = "rgba(0,0,1,0.1)";
+            ctx.fillRect(layout.imageRegions[i].getInnerX(), layout.imageRegions[i].getInnerY(), layout.imageRegions[i].getInnerWidth(), layout.imageRegions[i].getInnerHeight());
+        }
+
+        // layout.drawDebugBorders(ctx);
     }
 };

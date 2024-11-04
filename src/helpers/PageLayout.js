@@ -1,13 +1,16 @@
 import Rect from "./Rect";
 
+const LINE_WIDTH_THRESHOLD = 30;
+
 export default class PageLayout {
-    constructor() {
+    constructor(isAdditionalPage) {
         this.columns = [];
         this.imageRegions = [];
+        this.isAdditionalPage = isAdditionalPage ?? false;
     }
 
-    static createDefault() {
-        return (new PageLayout()).addColumn(0, 0, 595, 842, 56, 56, 56, 56);
+    static createDefault(isAdditionalPage) {
+        return (new PageLayout(isAdditionalPage)).addColumn(0, 0, 595, 842, 56, 56, 56, 56);
     }
 
     addColumn(x, y, width, height, ml, mr, mt, mb) {
@@ -45,7 +48,7 @@ export default class PageLayout {
         for (let i = 0; i < exclusion.length; i++) {
             const width = exclusion[i].min - prev;
 
-            if (width <= 0) {
+            if (width <= LINE_WIDTH_THRESHOLD) {
                 prev = Math.max(exclusion[i].max, columnMin);
 
                 continue;
@@ -58,11 +61,12 @@ export default class PageLayout {
 
             prev = Math.max(exclusion[i].max, columnMin);
         }
-
-        segments.push({
-            x: prev,
-            width: columnMax - prev,
-        });
+        if (columnMax - prev > LINE_WIDTH_THRESHOLD) {
+            segments.push({
+                x: prev,
+                width: columnMax - prev,
+            });
+        }
 
         return segments;
     }
@@ -78,7 +82,7 @@ export default class PageLayout {
             ctx.beginPath();
             ctx.rect(this.columns[i].getInnerX(), this.columns[i].getInnerY(), this.columns[i].getInnerWidth(), this.columns[i].getInnerHeight());
             ctx.setLineDash([6]);
-            ctx.stroke();            
+            ctx.stroke();
         }
 
         for (let i = 0; i < this.imageRegions.length; i++) {
@@ -91,7 +95,7 @@ export default class PageLayout {
             ctx.beginPath();
             ctx.rect(this.imageRegions[i].getInnerX(), this.imageRegions[i].getInnerY(), this.imageRegions[i].getInnerWidth(), this.imageRegions[i].getInnerHeight());
             ctx.setLineDash([6]);
-            ctx.stroke();            
+            ctx.stroke();
         }
     }
 };

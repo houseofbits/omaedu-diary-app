@@ -9,6 +9,7 @@
 * Vite
 
 ## TODO
-* Use images in PDF
+* Date period in title
 * Add template presets
-* Issue with line mismatch between preview and pdf
+* Test deployment
+* Migration command

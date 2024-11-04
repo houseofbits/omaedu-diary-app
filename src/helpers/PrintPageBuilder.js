@@ -22,6 +22,7 @@ export default class PrintPageBuilder {
 
     enableHeader(isEnabled) {
         this.isGenerateHeaderEnabled = isEnabled;
+        this.textStart = 0;
     }
 
     setPageNumber(num) {
@@ -70,7 +71,6 @@ export default class PrintPageBuilder {
     buildColumn(layout, column) {
         let posy = LINE_HEIGHT + Math.max(column.getInnerY(), this.textStart);
         const columnBottom = column.getInnerBottom();
-
         while (posy < columnBottom) {
             const lineSegments = layout.getAvailableLineSegments(column, posy);
             if (lineSegments.length > 0) {
@@ -78,8 +78,6 @@ export default class PrintPageBuilder {
                     const segment = lineSegments[i];
                     this.buildLine(segment.x, posy, segment.width);
                 }
-            } else {
-                this.buildLine(column.getInnerX(), posy, column.getInnerWidth());
             }
 
             posy += LINE_HEIGHT;
@@ -90,7 +88,7 @@ export default class PrintPageBuilder {
         if (this.remainingText.length == 0) {
             return;
         }
-
+        
         const { line, remaining } = this.generateTextLine(this.remainingText, width, FONT_SIZE);
         this.remainingText = remaining;
         if (line.length > 0) {

@@ -7,31 +7,31 @@ import './style.css'
 import App from './App.vue'
 
 
-// const myCustomLightTheme = {
-//     dark: false,
-//     colors: {
-//       background: '#FFFFFF',
-//       surface: '#FFFFFF',
-//       primary: '#6200EE',
-//       'primary-darken-1': '#3700B3',
-//       secondary: '#03DAC6',
-//       'secondary-darken-1': '#018786',
-//       error: '#B00020',
-//       info: '#2196F3',
-//       success: '#4CAF50',
-//       warning: '#FB8C00',
-//     },
-//   }
+const myCustomLightTheme = {
+    dark: false,
+    colors: {
+      background: '#E6E6E6',
+      surface: '#FFFFFF',
+      primary: '#3073C1',
+      'primary-darken-1': '#3700B3',
+      secondary: '#768A96',
+      'secondary-darken-1': '#018786',
+      error: '#B00020',
+      info: '#2196F3',
+      success: '#4CAF50',
+      warning: '#FB8C00',
+    },
+  }
 
 const vuetify = createVuetify({
     components,
     directives,
-    // theme: {
-    //     defaultTheme: 'myCustomLightTheme',
-    //     themes: {
-    //       myCustomLightTheme,
-    //     },
-    //   },    
+    theme: {
+        defaultTheme: 'myCustomLightTheme',
+        themes: {
+          myCustomLightTheme,
+        },
+      },    
 })
 
 createApp(App)
