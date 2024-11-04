@@ -6,6 +6,7 @@ const theme = useTheme();
 const emit = defineEmits(["close", "change-tab", "delete"]);
 const props = defineProps({
   title: String,
+  createdAt: String,
 });
 
 const backgroundColor = theme.current.value.colors.background;
@@ -64,6 +65,11 @@ watch(
         </svg>
       </v-col>
     </v-row>
+
+    <v-container class="text-center text-disabled">
+      {{ createdAt }}
+    </v-container>
+
     <v-row class="d-flex justify-center">
       <v-tabs
         v-model="tab"

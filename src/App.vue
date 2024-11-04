@@ -43,6 +43,17 @@ async function selectChapter(index) {
   selectedChapter.value = index;
 }
 
+async function getUserData() {
+  try {
+    const userData = await fetchUser(userCredentials);
+    user.value = userData;
+  } catch (error) {
+    addErrorMessage(
+      "Failed to load user data. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
+}
+
 async function addChapterAndEdit() {
   const data = {
     id: null,
@@ -51,19 +62,22 @@ async function addChapterAndEdit() {
     location: "",
     story: "",
     layouts: [],
+    createdAt: new Date().toISOString(),
   };
 
   try {
     const chapterData = await postChapter(userCredentials, data);
     data.id = chapterData.id;
 
-    chapters.push(data);
-    selectedChapter.value = chapters.length - 1;
+    chapters.unshift(data);
+    selectedChapter.value = 0;
   } catch (error) {
     addErrorMessage(
       "Failed to add new chapter. Try to refresh the page and if the problem persists please contact the technical support."
     );
   }
+
+  await getUserData();
 }
 
 async function updateChapter(chapter) {
@@ -116,6 +130,7 @@ onMounted(async () => {
         location: "",
         story: "",
         layouts: [],
+        createdAt: chapter.createdAt,
       };
     });
 
@@ -127,14 +142,7 @@ onMounted(async () => {
     );
   }
 
-  try {
-    const userData = await fetchUser(userCredentials);
-    user.value = userData;
-  } catch (error) {
-    addErrorMessage(
-      "Failed to load user data. Try to refresh the page and if the problem persists please contact the technical support."
-    );
-  }
+  await getUserData();
 });
 
 async function createPdf() {
@@ -147,6 +155,10 @@ const cssThemeProps = computed(() => {
     "--header-gradient-start": convertHEXToRGBA(secondaryColor, 100),
     "--header-gradient-end": convertHEXToRGBA(secondaryColor, 50),
   };
+});
+
+const datePeriod = computed(() => {
+  return user.value.datePeriodFrom + " - " + user.value.datePeriodTo;
 });
 
 function calculateSnackbarMargin(i) {
@@ -167,6 +179,7 @@ function calculateSnackbarMargin(i) {
     <template v-else>
       <chapters-header
         :title="user.diaryTitle"
+        :date-period="datePeriod"
         :is-chapters-empty="chapters.length == 0"
         @add-chapter="addChapterAndEdit"
         @update-title="updateTitle"

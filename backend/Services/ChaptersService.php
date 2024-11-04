@@ -20,6 +20,10 @@ class ChaptersService
     {
         $chapters = $user->getChapters()->toArray();
 
+        usort($chapters, function (Chapter $a, Chapter $b) {
+            return $b->getCreatedAt() <=> $a->getCreatedAt();
+        });
+
         return array_map([$this, "createChapterListData"], $chapters);
     }
 
@@ -88,6 +92,7 @@ class ChaptersService
             "id" => $chapter->getId(),
             "title" => $chapter->getTitle(),
             "period" => $chapter->getPeriod(),
+            "createdAt" => $chapter->getCreatedAt()->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -100,6 +105,7 @@ class ChaptersService
             "location" => $chapter->getLocation(),
             "period" => $chapter->getPeriod(),
             "layouts" => $chapter->getLayouts(),
+            "createdAt" => $chapter->getCreatedAt()->format('Y-m-d H:i:s'),
         ];
     }
 }

@@ -141,6 +141,7 @@ onMounted(async () => {
 <template>
   <edit-chapter-header
     :title="chapter.title"
+    :created-at="chapter.createdAt"
     @close="emit('close')"
     @change-tab="(t) => (tab = t)"
     @delete="emit('delete', chapter.id)"

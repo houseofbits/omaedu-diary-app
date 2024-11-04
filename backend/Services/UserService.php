@@ -2,17 +2,38 @@
 
 namespace Backend\Services;
 
+use DateTime;
 use Backend\Repositories\UsersRepository;
 use Backend\Entities\User;
+use Backend\Entities\Chapter;
 use Backend\Structures\SettingsStructure;
 
 class UserService
 {
-
     public function __construct(
         private UsersRepository $usersRepository,
     ) {
 
+    }
+
+    public function get(User $user): array
+    {
+        $initialDate = new DateTime("now");
+        $minDate = array_reduce($user->getChapters()->toArray(), function (DateTime $carry, Chapter $chapter) {
+            return ($chapter->getCreatedAt() < $carry) ? $chapter->getCreatedAt() : $carry;
+        }, $initialDate);
+
+        $initialDate = new DateTime("now");
+        $maxDate = array_reduce($user->getChapters()->toArray(), function (DateTime $carry, Chapter $chapter) {
+            return ($chapter->getCreatedAt() > $carry) ? $chapter->getCreatedAt() : $carry;
+        }, $initialDate);        
+
+        return [
+            'diaryTitle' => $user->getDiaryTitle(),
+            'settings' => $user->getSettings(),
+            'datePeriodFrom' => $minDate->format('Y-m-d'),
+            'datePeriodTo' => $maxDate->format('Y-m-d'),
+        ];
     }
 
     private function decryptUserName(string $credentials): ?string
@@ -28,7 +49,7 @@ class UserService
         // $encrypted = openssl_encrypt($userName, $method, $key, 0, $iv);
         // $encrypted = base64_encode($iv . $encrypted);
         // var_dump($encrypted);
-        
+
         $encrypted = base64_decode($credentials);
         $iv = substr($encrypted, 0, openssl_cipher_iv_length($method));
         $encrypted = substr($encrypted, openssl_cipher_iv_length($method));
@@ -72,7 +93,7 @@ class UserService
 
         $this->usersRepository->persist($user, true);
 
-        return $user->toJson();
+        return $this->get($user);
     }
 }
 ;

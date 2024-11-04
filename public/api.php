@@ -15,7 +15,8 @@ $dotenv->safeLoad();
 $router = Application::get(RouterService::class);
 
 $router->GET('user', function ($request, $response) {
-    $response->toJSON($request->user->toJson());
+    $userService = Application::get(UserService::class);
+    $response->toJSON($userService->get($request->user));
 });
 
 $router->POST('user', function ($request, $response) {
@@ -26,7 +27,7 @@ $router->POST('user', function ($request, $response) {
 //All chapters
 $router->GET('chapters', function ($request, $response) {
     $chaptersService = Application::get(ChaptersService::class);
-    $response->toJSON($chaptersService->getAll($request->user));    
+    $response->toJSON($chaptersService->getAll($request->user));
 }, false);
 
 //Single chapter

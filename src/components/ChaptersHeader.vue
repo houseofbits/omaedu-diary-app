@@ -9,6 +9,7 @@ const theme = useTheme();
 const emit = defineEmits(["add-chapter", "update-title", "download"]);
 const props = defineProps({
   title: String,
+  datePeriod: String,
   isChaptersEmpty: Boolean,
 });
 
@@ -18,14 +19,8 @@ const backgroundColor = theme.current.value.colors.background;
 const titleTextInput = ref(null);
 const isTitleEditEnabled = ref(false);
 const title = ref(props.title);
-const dateFrom = ref("2023-01-09");
-const dateTo = ref("2023-12-02");
 const isInfoModalOpen = ref(false);
 const isSetttingsModalOpen = ref(false);
-
-function dates() {
-  return dateFrom.value + " - " + dateTo.value;
-}
 
 async function toggleTitleEdit() {
   isTitleEditEnabled.value = !isTitleEditEnabled.value;
@@ -104,7 +99,7 @@ watch(
       </v-col>
     </v-row>
     <v-container class="text-center text-disabled">
-      {{ dates() }}
+      {{ datePeriod }}
     </v-container>
 
     <div class="d-flex justify-center">
