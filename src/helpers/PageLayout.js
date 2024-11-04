@@ -14,13 +14,13 @@ export default class PageLayout {
     }
 
     addColumn(x, y, width, height, ml, mr, mt, mb) {
-        this.columns.push(new Rect(x, y, width, height, mr, ml, mt, mb));
+        this.columns.push(new Rect(x, y, width, height, ml, mr, mt, mb));
 
         return this;
     }
 
     addImageRegion(x, y, width, height, ml, mr, mt, mb) {
-        this.imageRegions.push(new Rect(x, y, width, height, mr, ml, mt, mb));
+        this.imageRegions.push(new Rect(x, y, width, height, ml, mr, mt, mb));
 
         return this;
     }

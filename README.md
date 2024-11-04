@@ -9,7 +9,5 @@
 * Vite
 
 ## TODO
-* Date period in title
-* Add template presets
 * Test deployment
 * Migration command
