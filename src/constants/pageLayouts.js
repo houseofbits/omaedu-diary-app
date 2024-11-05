@@ -11,7 +11,7 @@ export const PAGE_LAYOUTS = {
         layout: PageLayout.createDefault()
             .addImageRegion(56, 373, 241, 412, 0, 20, 10, 0)
             .addImageRegion(299, 595, 241, 190, 0, 0, 20, 0),
-        image: '/dist/assets/images/L1.jpg',
+        image: '/assets/images/L1.jpg',
     },
     'l2': {
         layout: PageLayout.createDefault().addImageRegion(56, 555, 483, 230, 0, 0, 20, 0),

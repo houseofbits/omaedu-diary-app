@@ -7,7 +7,3 @@
 ### Frontend
 * Vue 3 
 * Vite
-
-## TODO
-* Test deployment
-* Migration command

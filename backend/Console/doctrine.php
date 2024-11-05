@@ -2,7 +2,7 @@
 require_once './vendor/autoload.php';
 
 /**
- * php src/Console/doctrine.php orm:schema-tool:update --force
+ * php backend/Console/doctrine.php orm:schema-tool:update --force
  */
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use Backend\Services\EntityManagerInstance;

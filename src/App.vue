@@ -20,7 +20,6 @@ import useErrorStack from "./composables/ErrorStack";
 const { errorMessages, addErrorMessage } = useErrorStack();
 const theme = useTheme();
 const secondaryColor = theme.current.value.colors.secondary;
-
 const userCredentials = inject("userCredentials");
 let user = ref(null);
 const chapters = reactive([]);

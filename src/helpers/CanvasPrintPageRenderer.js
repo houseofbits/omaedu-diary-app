@@ -48,8 +48,8 @@ export default class CanvasPrintPageRenderer {
                 targetWidth = fragment.height / imgAspect;
                 targetHeight = fragment.height;
             } else {
-                targetWidth = fragment.height;
-                targetHeight = fragment.height * imgAspect;
+                targetWidth = fragment.width;
+                targetHeight = fragment.width * imgAspect;
             }
 
             ctx.drawImage(img, imgX, imgY, img.width, img.height, fragment.x, fragment.y,

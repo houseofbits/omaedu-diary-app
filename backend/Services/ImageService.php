@@ -102,7 +102,7 @@ class ImageService
 
         unlink($imagePath);
     }
-
+    
     private function createData(Image $image): array
     {
         return [

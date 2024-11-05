@@ -12,6 +12,7 @@ class ChaptersService
 {
     public function __construct(
         private ChaptersRepository $chaptersRepository,
+        private ImageService $imageService,
     ) {
 
     }
@@ -44,6 +45,10 @@ class ChaptersService
 
         if (!$chapter || $chapter->getUser()?->getId() !== $user->getId()) {
             throw new HttpException();
+        }
+
+        foreach ($chapter->getImages() as $image) {
+            $this->imageService->deleteImage($user, $image->getId());
         }
 
         $this->chaptersRepository->remove($chapter);
