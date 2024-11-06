@@ -1,7 +1,8 @@
 <script setup>
-import { onMounted, reactive, ref, inject, computed } from "vue";
+import { onMounted, reactive, ref, inject, computed, nextTick } from "vue";
 import EditChapter from "./components/EditChapter.vue";
 import Chapters from "./components/Chapters.vue";
+import PrintPreview from "./components/PrintPreview.vue";
 import ChaptersHeader from "./components/ChaptersHeader.vue";
 import {
   fetchUser,
@@ -27,6 +28,7 @@ const selectedChapter = ref(null);
 const pdfBuilder = new PdfBuilder();
 const isErrorVisible = ref(true);
 const isPdfGenerating = ref(false);
+const isPrintPreviewEnabled = ref(false);
 const errorMessage = ref(
   "Failed to save the chapter. Try to refresh the page and if the problem persists please contact the technical support."
 );
@@ -168,30 +170,44 @@ const datePeriod = computed(() => {
 function calculateSnackbarMargin(i) {
   return i * 60 + "px";
 }
+
+function print() {
+  isPrintPreviewEnabled.value = true;
+}
 </script>
 
 <template>
+  <!-- <v-btn @click="print">Print</v-btn> -->
   <v-app v-if="user" :style="cssThemeProps">
-    <edit-chapter
-      v-if="selectedChapter !== null"
-      :chapter="chapters[selectedChapter]"
-      @close="selectedChapter = null"
-      @update="updateChapter"
-      @delete="onDeleteChapter"
-    ></edit-chapter>
+    <template v-if="!isPrintPreviewEnabled">
+      <edit-chapter
+        v-if="selectedChapter !== null"
+        :chapter="chapters[selectedChapter]"
+        @close="selectedChapter = null"
+        @update="updateChapter"
+        @delete="onDeleteChapter"
+      ></edit-chapter>
 
-    <template v-else>
-      <chapters-header
-        :title="user.diaryTitle"
-        :date-period="datePeriod"
-        :is-chapters-empty="chapters.length == 0"
-        :is-pdf-generating="isPdfGenerating"
-        @add-chapter="addChapterAndEdit"
-        @update-title="updateTitle"
-        @download="createPdf"
-      />
-      <chapters :chapters="chapters" @select="selectChapter" />
+      <template v-else>
+        <chapters-header
+          :title="user.diaryTitle"
+          :date-period="datePeriod"
+          :is-chapters-empty="chapters.length == 0"
+          :is-pdf-generating="isPdfGenerating"
+          @add-chapter="addChapterAndEdit"
+          @update-title="updateTitle"
+          @download="createPdf"
+          @print="print"
+        />
+        <chapters :chapters="chapters" @select="selectChapter" />
+      </template>
     </template>
+
+    <print-preview
+      v-else
+      :chapters="chapters"
+      @close="isPrintPreviewEnabled = false"
+    ></print-preview>
   </v-app>
 
   <v-snackbar

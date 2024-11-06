@@ -1,16 +1,21 @@
 
 
 export default class CanvasPrintPageRenderer {   
+
+    constructor(scale) {
+        this.scale = scale ?? 1.0;
+    }
+    
     renderText(ctx, page) {
-        ctx.font = "12pt Calibri";
         ctx.fillStyle = "black";
         for (let i = 0; i < page.textFragments.length; i++) {
             const textFragment = page.textFragments[i];
-            ctx.font = textFragment.fontSizePt + "pt Calibri";
+            const fontSize = textFragment.fontSizePt * this.scale;
+            ctx.font = fontSize + "pt Calibri";
             ctx.fillText(
                 textFragment.text,
-                textFragment.positionLeft,
-                textFragment.positionTop
+                textFragment.positionLeft * this.scale,
+                textFragment.positionTop * this.scale
             );
         }
     }
