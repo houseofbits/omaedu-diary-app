@@ -88,11 +88,12 @@ export default class PrintPageBuilder {
         if (this.remainingText.length == 0) {
             return;
         }
-        
+
         const { line, remaining } = this.generateTextLine(this.remainingText, width, FONT_SIZE);
         this.remainingText = remaining;
         if (line.length > 0) {
-            this.page.addTextFragment(x, y, line, FONT_SIZE);
+            // this.page.addTextFragment(x, y, line, FONT_SIZE);
+            this.buildJustifiedTextLine(x, y, width, line, FONT_SIZE);
         }
     }
 
@@ -196,5 +197,24 @@ export default class PrintPageBuilder {
             line: "",
             remaining: ""
         };
+    }
+
+    buildJustifiedTextLine(x, y, width, text, fontSize) {
+        const textWidth = this.measureWidth(text, fontSize);
+        const words = text.split(" ");
+        const remainingSpace = width - textWidth;
+        if (remainingSpace > 80 || words.length < 3) {
+            this.page.addTextFragment(x, y, text, fontSize);
+
+            return;
+        }
+
+        const wordAdjustment = remainingSpace / (words.length - 1);
+        let stepX = x;
+        for (const word of words) {
+            this.page.addTextFragment(stepX, y, word + " ", fontSize);
+            const wordWidth = this.measureWidth(word + " ", fontSize);
+            stepX += wordWidth + wordAdjustment;
+        }
     }
 };

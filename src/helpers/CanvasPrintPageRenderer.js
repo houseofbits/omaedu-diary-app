@@ -1,17 +1,18 @@
 
 
-export default class CanvasPrintPageRenderer {   
+export default class CanvasPrintPageRenderer {
 
     constructor(scale) {
         this.scale = scale ?? 1.0;
+        this.fontFace = "Corbel";
     }
-    
+
     renderText(ctx, page) {
         ctx.fillStyle = "black";
         for (let i = 0; i < page.textFragments.length; i++) {
             const textFragment = page.textFragments[i];
             const fontSize = textFragment.fontSizePt * this.scale;
-            ctx.font = fontSize + "pt Calibri";
+            ctx.font = fontSize + "pt " + this.fontFace;
             ctx.fillText(
                 textFragment.text,
                 textFragment.positionLeft * this.scale,
@@ -57,9 +58,9 @@ export default class CanvasPrintPageRenderer {
                 targetHeight = fragment.width * imgAspect;
             }
 
-            ctx.drawImage(img, imgX, imgY, img.width, img.height, fragment.x, fragment.y,
-                targetWidth,
-                targetHeight
+            ctx.drawImage(img, imgX, imgY, img.width, img.height, fragment.x * this.scale, fragment.y * this.scale,
+                targetWidth * this.scale,
+                targetHeight * this.scale
             );
         }
     }

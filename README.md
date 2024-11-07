@@ -9,5 +9,6 @@
 * Vite
 
 TODO
-* Print mode
-* Image backgrounds
+* Font loading issue
+* Visuals / image backgrounds
+

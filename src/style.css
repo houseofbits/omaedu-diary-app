@@ -1,9 +1,4 @@
 @font-face {
-    font-family: 'Calibri';
-    src: url('/assets/fonts/calibri.ttf');
-}
-
-@font-face {
     font-family: 'Cambria';
     src: url('/assets/fonts/cambria.ttf');
 }

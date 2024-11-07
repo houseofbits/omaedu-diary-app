@@ -34,7 +34,8 @@ export default class PdfBuilder {
 
         this.pageNum = 1;
         this.pdfDocument = await PDFDocument.create();
-        this.pdfFont = await this.loadFont('/assets/fonts/calibri.ttf');
+        this.pdfFont = await this.loadFont('/assets/fonts/corbel.ttf');
+
 
         this.pdfBuilder = new PdfPrintPageBuilder(this.pdfDocument, this.pdfFont);
         this.pdfRenderer = new PdfPrintPageRenderer();

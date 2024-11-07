@@ -180,7 +180,7 @@ watch(
               />
             </svg>
           </template>
-          Print</v-btn
+          Print preview</v-btn
         >
       </template>
     </div>

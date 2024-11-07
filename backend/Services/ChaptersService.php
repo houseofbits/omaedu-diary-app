@@ -95,8 +95,8 @@ class ChaptersService
     {
         return [
             "id" => $chapter->getId(),
-            "title" => $chapter->getTitle(),
-            "period" => $chapter->getPeriod(),
+            "title" => htmlspecialchars_decode($chapter->getTitle()),
+            "period" => htmlspecialchars_decode($chapter->getPeriod()),
             "createdAt" => $chapter->getCreatedAt()->format('Y-m-d H:i:s'),
         ];
     }
@@ -105,10 +105,10 @@ class ChaptersService
     {
         return [
             "id" => $chapter->getId(),
-            "title" => $chapter->getTitle(),
-            "story" => $chapter->getStory(),
-            "location" => $chapter->getLocation(),
-            "period" => $chapter->getPeriod(),
+            "title" => htmlspecialchars_decode($chapter->getTitle()),
+            "story" => htmlspecialchars_decode($chapter->getStory()),
+            "location" => htmlspecialchars_decode($chapter->getLocation()),
+            "period" => htmlspecialchars_decode($chapter->getPeriod()),
             "layouts" => $chapter->getLayouts(),
             "createdAt" => $chapter->getCreatedAt()->format('Y-m-d H:i:s'),
         ];
