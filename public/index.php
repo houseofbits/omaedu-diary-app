@@ -15,7 +15,7 @@ require_once __DIR__ . '/vite.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
+    <title>Personal diary</title>
 
     <?= vite('_vendor-Dm7GrVsG.js') ?>
     <?= vite('main.js') ?>

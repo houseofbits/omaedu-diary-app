@@ -126,13 +126,13 @@ onMounted(async () => {
     >
   </v-app-bar>
 
-  <v-main>
+  <v-container max-width="800">
     <template v-for="(page, index) in printPages" :key="index">
       <print-page-preview :print-page="page"></print-page-preview>
 
       <div class="pagebreak"></div>
     </template>
-  </v-main>
+  </v-container>
 </template>
 
 <style>

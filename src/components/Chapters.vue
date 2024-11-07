@@ -17,7 +17,7 @@ function selectChapter(index) {
 </script>
 
 <template>
-  <v-container v-if="chapters.length > 0" fluid class="pt-2">
+  <v-container v-if="chapters.length > 0" class="pt-2" max-width="1100">
     <v-list density="compact">
       <v-list-subheader>Chapters</v-list-subheader>
 
