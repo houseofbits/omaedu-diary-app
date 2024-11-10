@@ -1,7 +1,9 @@
 <script setup>
 import { computed, onMounted, ref, reactive, watch, inject } from "vue";
 import CanvasPrintPageRenderer from "../helpers/CanvasPrintPageRenderer";
+import useSettings from "../composables/Settings";
 
+const { getDiaryBackgroundImageUrl } = useSettings();
 const props = defineProps({
   printPage: Object,
 });
@@ -17,15 +19,16 @@ onMounted(async () => {
   if (ctx != null) {
     ctx.reset();
     const canvasPrintPageRenderer = new CanvasPrintPageRenderer(scale);
-    canvasPrintPageRenderer.renderText(ctx, props.printPage);
-    canvasPrintPageRenderer.renderImages(ctx, props.printPage);
+    await canvasPrintPageRenderer.renderBackground(ctx, getDiaryBackgroundImageUrl());
+    await canvasPrintPageRenderer.renderText(ctx, props.printPage);
+    await canvasPrintPageRenderer.renderImages(ctx, props.printPage);
   }
 });
 </script>
 
 <template>
   <canvas
-    class="print-canvas"
+    class="print-canvas elevation-4"
     :width="canvasWidth"
     :height="canvasHeight"
     ref="canvasRef"

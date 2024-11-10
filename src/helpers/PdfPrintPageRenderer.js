@@ -16,6 +16,23 @@ export default class PdfPrintPageRenderer {
         }
     }
 
+    async renderBackground(imageUrl, pdfPage) {
+        if (imageUrl === null) {
+            return;
+        }
+
+        const image = await this.embedImage(pdfPage.doc, imageUrl);
+
+        if(image) {
+            pdfPage.drawImage(image, {
+                x: 0,
+                y: 0,
+                width: 595,
+                height: 842,
+            });
+        }
+    }
+
     async renderImages(printPage, pdfPage) {
         const { width, height } = pdfPage.getSize();
 
@@ -43,6 +60,21 @@ export default class PdfPrintPageRenderer {
                 });
             }
         }
+    }
+
+    async embedImage(document, imageUrl) {
+        const imageBytes = await fetch(imageUrl).then((res) => res.arrayBuffer());
+
+        const mime = this.getMimeType(imageBytes);
+        let image = null;
+
+        if (mime === 'image/png') {
+            image = await document.embedPng(imageBytes)
+        } else if (mime === 'image/jpeg') {
+            image = await document.embedJpg(imageBytes)
+        }
+
+        return image;
     }
 
     getMimeType(imageBytes) {

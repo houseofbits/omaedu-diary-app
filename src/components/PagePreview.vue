@@ -5,7 +5,9 @@ import CanvasPrintPageRenderer from "../helpers/CanvasPrintPageRenderer";
 import { PAGE_LAYOUTS } from "../constants/pageLayouts";
 import LayoutsModal from "./LayoutsModal.vue";
 import _ from "lodash";
+import useSettings from "../composables/Settings";
 
+const { settings, getDiaryBackgroundImageUrl } = useSettings();
 const props = defineProps({
   chapter: Object,
   images: Array,
@@ -21,11 +23,14 @@ const previewPageNum = ref(0);
 const isLayoutsModalVisible = ref(false);
 let layouts = ["default"];
 
-function renderPage(ctx, text) {
+async function renderPage(ctx, text) {
   hasNextPage.value = false;
   hasPrevPage.value = previewPageNum.value > 0;
 
   const pageBuilder = new CanvasPrintPageBuilder(ctx);
+  pageBuilder.isGeneratePageNumberEnabled = settings.isPageNumberingEnabled;
+  pageBuilder.isTextJustifyEnabled = settings.isTextJustifyEnabled;
+  
   pageBuilder.setText(text);
   pageBuilder.setImages(_.cloneDeep(props.images));
   pageBuilder.setHeader(
@@ -52,8 +57,9 @@ function renderPage(ctx, text) {
 
   ctx.reset();
   const canvasPrintPageRenderer = new CanvasPrintPageRenderer();
-  canvasPrintPageRenderer.renderText(ctx, pageBuilder.page);
-  canvasPrintPageRenderer.renderImages(ctx, pageBuilder.page);
+  await canvasPrintPageRenderer.renderBackground(ctx, getDiaryBackgroundImageUrl());
+  await canvasPrintPageRenderer.renderText(ctx, pageBuilder.page);
+  await canvasPrintPageRenderer.renderImages(ctx, pageBuilder.page);
   canvasPrintPageRenderer.renderLayout(ctx, currentLayout);
 }
 
@@ -113,7 +119,7 @@ watch(
   }
 );
 
-onMounted(() => {
+onMounted(async () => {
   layouts = props.chapter.layouts;
   if (!layouts?.length) {
     layouts = ["default"];
@@ -121,7 +127,8 @@ onMounted(() => {
 
   ctx = canvasRef.value.getContext("2d");
   if (ctx != null) {
-    renderPage(ctx, props.chapter.story);
+    await document.fonts.load("12pt Corbel");
+    await renderPage(ctx, props.chapter.story);
   }
 
   emit("change-layouts", layouts);

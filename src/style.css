@@ -24,8 +24,17 @@
         page-break-after: always;
     }
 
+    .print-page-top-spacer {
+        display: none;
+    }
+
     .v-toolbar {
         display: none;
+    }
+
+    .print-preview-container {
+        margin: 0 !important;
+        padding: 0 !important;
     }
 
     .v-main {
@@ -33,8 +42,12 @@
         padding: 0 !important;
     }
 
+    .print-canvas {
+        box-shadow: none !important;
+    }
+
     @page {
-        margin: 0.1in !important;
+        margin: 0.01in !important;
         size: portrait;
     }
 }

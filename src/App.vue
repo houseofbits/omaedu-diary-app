@@ -1,5 +1,13 @@
 <script setup>
-import { onMounted, reactive, ref, inject, computed, nextTick } from "vue";
+import {
+  onMounted,
+  reactive,
+  ref,
+  inject,
+  computed,
+  nextTick,
+  watch,
+} from "vue";
 import EditChapter from "./components/EditChapter.vue";
 import Chapters from "./components/Chapters.vue";
 import PrintPreview from "./components/PrintPreview.vue";
@@ -14,10 +22,12 @@ import {
   deleteChapter,
 } from "./api/api.js";
 import PdfBuilder from "./helpers/PdfBuilder";
-import convertHEXToRGBA from "./helpers/convertHEXToRGBA";
 import { useTheme } from "vuetify";
 import useErrorStack from "./composables/ErrorStack";
+import useSettings from "./composables/Settings";
+import _ from "lodash";
 
+const { settings, setSettings, getPageBackgroundImageUrl, getDiaryBackgroundImageUrl } = useSettings();
 const { errorMessages, addErrorMessage } = useErrorStack();
 const theme = useTheme();
 const secondaryColor = theme.current.value.colors.secondary;
@@ -49,6 +59,7 @@ async function getUserData() {
   try {
     const userData = await fetchUser(userCredentials);
     user.value = userData;
+    setSettings(user.value.settings);
   } catch (error) {
     addErrorMessage(
       "Failed to load user data. Try to refresh the page and if the problem persists please contact the technical support."
@@ -121,6 +132,22 @@ async function updateTitle(title) {
   }
 }
 
+watch(
+  () => settings,
+  async () => {
+    user.value.settings = _.cloneDeep(settings);
+
+    try {
+      await updateUser(userCredentials, user.value);
+    } catch (error) {
+      addErrorMessage(
+        "Failed to update title. Try to refresh the page and if the problem persists please contact the technical support."
+      );
+    }
+  },
+  { deep: true }
+);
+
 onMounted(async () => {
   try {
     let chaptersData = await fetchAllChapters(userCredentials);
@@ -150,16 +177,21 @@ onMounted(async () => {
 async function createPdf() {
   isPdfGenerating.value = true;
 
-  const pdfDocument = await pdfBuilder.build(userCredentials, chapters);
-  await pdfBuilder.download(pdfDocument);
+  const pdfDocument = await pdfBuilder.build(
+    userCredentials,
+    chapters,
+    settings.isPageNumberingEnabled,
+    settings.isTextJustifyEnabled,
+    getDiaryBackgroundImageUrl()
+  );
+  await pdfBuilder.download(pdfDocument, user.value.diaryTitle);
 
   isPdfGenerating.value = false;
 }
 
 const cssThemeProps = computed(() => {
   return {
-    "--header-gradient-start": convertHEXToRGBA(secondaryColor, 100),
-    "--header-gradient-end": convertHEXToRGBA(secondaryColor, 50),
+    "--header-bg-image": "url(" + getPageBackgroundImageUrl() + ")",
   };
 });
 
@@ -177,7 +209,6 @@ function print() {
 </script>
 
 <template>
-  <!-- <v-btn @click="print">Print</v-btn> -->
   <v-app v-if="user" :style="cssThemeProps">
     <template v-if="!isPrintPreviewEnabled">
       <edit-chapter
@@ -224,10 +255,7 @@ function print() {
 
 <style>
 .header-bg {
-  background: linear-gradient(
-    0deg,
-    var(--header-gradient-end) 0%,
-    var(--header-gradient-start) 100%
-  );
+  background-image: var(--header-bg-image);
+  background-size: cover;
 }
 </style>

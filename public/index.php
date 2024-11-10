@@ -17,7 +17,21 @@ require_once __DIR__ . '/vite.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personal diary</title>
 
-    <?= vite('_vendor-Dm7GrVsG.js') ?>
+    <link rel="preload" href="assets/fonts/corbel.ttf" as="font" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/balti-ziedi.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/gaisas-spalvas.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/lashkrasa.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/pasteltoni.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/zalganzils.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/zilganas-spalvas.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/ainava.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/makoni.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/rozigas-spalvas.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/spalvas-roza.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/tirkizs.jpg" as="image" crossorigin="anonymous">
+    <link rel="preload" href="assets/images/zilas-spalvas.jpg" as="image" crossorigin="anonymous">
+
+    <?= vite('_vendor-C1h9822P.js') ?>
     <?= vite('main.js') ?>
 
 </head>

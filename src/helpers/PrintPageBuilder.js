@@ -13,6 +13,7 @@ export default class PrintPageBuilder {
         this.textStart = 0;
         this.isGenerateHeaderEnabled = false;
         this.isGeneratePageNumberEnabled = true;
+        this.isTextJustifyEnabled = true;
         this.pageNumber = 0;
         this.title = "";
         this.date = "";
@@ -92,8 +93,11 @@ export default class PrintPageBuilder {
         const { line, remaining } = this.generateTextLine(this.remainingText, width, FONT_SIZE);
         this.remainingText = remaining;
         if (line.length > 0) {
-            // this.page.addTextFragment(x, y, line, FONT_SIZE);
-            this.buildJustifiedTextLine(x, y, width, line, FONT_SIZE);
+            if (this.isTextJustifyEnabled) {
+                this.buildJustifiedTextLine(x, y, width, line, FONT_SIZE);
+            } else {
+                this.page.addTextFragment(x, y, line, FONT_SIZE);
+            }
         }
     }
 

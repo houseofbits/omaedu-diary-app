@@ -26,7 +26,7 @@ class UserService
         $initialDate = new DateTime("now");
         $maxDate = array_reduce($user->getChapters()->toArray(), function (DateTime $carry, Chapter $chapter) {
             return ($chapter->getCreatedAt() > $carry) ? $chapter->getCreatedAt() : $carry;
-        }, $initialDate);        
+        }, $initialDate);
 
         return [
             'diaryTitle' => $user->getDiaryTitle(),
@@ -86,7 +86,10 @@ class UserService
     public function update(User $user, array $userData): array
     {
         $settings = new SettingsStructure();
-        $settings->theme = $userData['settings']['theme'];
+        $settings->pageTheme = $userData['settings']['pageTheme'];
+        $settings->diaryTheme = $userData['settings']['diaryTheme'];
+        $settings->isPageNumberingEnabled = $userData['settings']['isPageNumberingEnabled'];
+        $settings->isTextJustifyEnabled = $userData['settings']['isTextJustifyEnabled'];
 
         $user->setSettings($settings);
         $user->setDiaryTitle($userData['diaryTitle']);

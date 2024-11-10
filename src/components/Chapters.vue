@@ -18,14 +18,15 @@ function selectChapter(index) {
 
 <template>
   <v-container v-if="chapters.length > 0" class="pt-2" max-width="1100">
-    <v-list density="compact">
-      <v-list-subheader>Chapters</v-list-subheader>
+    <v-list density="compact" class="background-none">
+      <v-list-subheader class="background-none">Chapters</v-list-subheader>
 
       <v-list-item
         v-for="(chapter, i) in chapters"
         :key="i"
         :value="chapter"
         color="primary"
+        class="chapters-list-item"
         @click="selectChapter(i)"
       >
         <template v-slot:prepend>
@@ -69,11 +70,10 @@ function selectChapter(index) {
 </template>
 
 <style>
-.v-list-subheader,
-.v-list {
+.background-none {
   background: none !important;
 }
-.v-list-item {
+.chapters-list-item{
   background: white;
   margin-top: 6px;
   border-radius: 6px !important;

@@ -7,7 +7,7 @@ export default class CanvasPrintPageRenderer {
         this.fontFace = "Corbel";
     }
 
-    renderText(ctx, page) {
+    async renderText(ctx, page) {
         ctx.fillStyle = "black";
         for (let i = 0; i < page.textFragments.length; i++) {
             const textFragment = page.textFragments[i];
@@ -19,6 +19,20 @@ export default class CanvasPrintPageRenderer {
                 textFragment.positionTop * this.scale
             );
         }
+    }
+
+    async renderBackground(ctx, imageUrl) {
+        if (imageUrl === null) {
+            return;
+        }
+
+        let img = new Image();
+        await new Promise(r => img.onload = r, img.src = imageUrl);
+
+        ctx.drawImage(img, 0, 0, img.width, img.height, 0, 0,
+            595 * this.scale,
+            842 * this.scale
+        );
     }
 
     async renderImages(ctx, page) {

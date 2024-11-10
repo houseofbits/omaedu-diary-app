@@ -5,7 +5,9 @@ import { fetchChapter, fetchChapterImages, imageUrl } from "./../api/api.js";
 import { PAGE_LAYOUTS } from "../constants/pageLayouts";
 import CanvasPrintPageBuilder from "../helpers/CanvasPrintPageBuilder";
 import PrintPagePreview from "./PrintPagePreview.vue";
+import useSettings from "../composables/Settings";
 
+const { settings } = useSettings();
 const emit = defineEmits(["close"]);
 const props = defineProps({
   chapters: Array,
@@ -35,6 +37,9 @@ async function generatePages() {
   });
 
   const pageBuilder = new CanvasPrintPageBuilder(ctx);
+  pageBuilder.isGeneratePageNumberEnabled = settings.isPageNumberingEnabled;
+  pageBuilder.isTextJustifyEnabled = settings.isTextJustifyEnabled;
+
   let pageNum = 1;
   for (let i = 0; i < sortedChapters.length; i++) {
     const chapterData = await fetchChapter(
@@ -69,10 +74,10 @@ async function generatePages() {
 }
 
 function print() {
-//   window.addEventListener(
-//     "afterprint",
-//     () => (isPrintPreviewEnabled.value = false)
-//   );
+  //   window.addEventListener(
+  //     "afterprint",
+  //     () => (isPrintPreviewEnabled.value = false)
+  //   );
 
   window.print();
 }
@@ -80,6 +85,7 @@ function print() {
 onMounted(async () => {
   ctx = canvasRef.value.getContext("2d");
   if (ctx != null) {
+    await document.fonts.load("12pt Corbel");
     await generatePages();
   }
 });
@@ -126,7 +132,8 @@ onMounted(async () => {
     >
   </v-app-bar>
 
-  <v-container max-width="800">
+  <v-container max-width="800" class="print-preview-container">
+    <div class="print-page-top-spacer"></div>
     <template v-for="(page, index) in printPages" :key="index">
       <print-page-preview :print-page="page"></print-page-preview>
 
@@ -139,5 +146,8 @@ onMounted(async () => {
 #temporary-print-canvas {
   width: 100%;
   display: none;
+}
+.print-page-top-spacer {
+  height: 50px;
 }
 </style>

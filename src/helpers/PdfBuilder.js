@@ -21,7 +21,7 @@ export default class PdfBuilder {
         this.pageNum = 1;
     }
 
-    async build(userCredentials, chapters) {
+    async build(userCredentials, chapters, showPageNumbers, justifyText, backgroundImageUrl) {
         const sortedChapters = _.cloneDeep(chapters).sort((a, b) => {
             if (a.createdAt < b.createdAt) {
                 return -1;
@@ -38,6 +38,9 @@ export default class PdfBuilder {
 
 
         this.pdfBuilder = new PdfPrintPageBuilder(this.pdfDocument, this.pdfFont);
+        this.pdfBuilder.isGeneratePageNumberEnabled = showPageNumbers;
+        this.pdfBuilder.isTextJustifyEnabled = justifyText;
+
         this.pdfRenderer = new PdfPrintPageRenderer();
 
         const defaultLayout = PageLayout.createDefault();
@@ -59,13 +62,13 @@ export default class PdfBuilder {
 
             //First page
             this.pdfBuilder.enableHeader(true);
-            await this.createChapterFirstPage(PAGE_LAYOUTS[layoutName]?.layout ?? defaultLayout);
+            await this.createChapterFirstPage(PAGE_LAYOUTS[layoutName]?.layout ?? defaultLayout, backgroundImageUrl);
 
             while (this.pdfBuilder.hasTextRemaining()) {
                 chapterPageNum++;
                 layoutName = chapterData.layouts[chapterPageNum] ?? "default";
                 this.pdfBuilder.enableHeader(false);
-                await this.createPage(PAGE_LAYOUTS[layoutName]?.layout ?? defaultLayout);
+                await this.createPage(PAGE_LAYOUTS[layoutName]?.layout ?? defaultLayout, backgroundImageUrl);
             }
         }
 
@@ -81,19 +84,20 @@ export default class PdfBuilder {
         link.click();
     }
 
-    async createChapterFirstPage(layout) {
-        const pdfPage = await this.createPage(layout);
+    async createChapterFirstPage(layout, backgroundImageUrl) {
+        const pdfPage = await this.createPage(layout, backgroundImageUrl);
 
         return pdfPage;
     }
 
-    async createPage(layout) {
+    async createPage(layout, backgroundImageUrl) {
         this.pdfBuilder.setPageNumber(this.pageNum);
         this.pdfBuilder.buildPage(layout);
         const pdfPage = this.pdfDocument.addPage();
 
-        this.pdfRenderer.renderText(this.pdfBuilder.page, pdfPage, this.pdfFont);
+        await this.pdfRenderer.renderBackground(backgroundImageUrl, pdfPage);
         await this.pdfRenderer.renderImages(this.pdfBuilder.page, pdfPage);
+        this.pdfRenderer.renderText(this.pdfBuilder.page, pdfPage, this.pdfFont);
 
         this.pageNum++;
 
