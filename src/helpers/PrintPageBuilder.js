@@ -204,20 +204,26 @@ export default class PrintPageBuilder {
     }
 
     buildJustifiedTextLine(x, y, width, text, fontSize) {
-        const textWidth = this.measureWidth(text, fontSize);
         const words = text.split(" ");
+
+        let initialValue = 0;
+        const textWidth = words.reduce(
+            (accumulator, currentValue) => accumulator + this.measureWidth(currentValue, fontSize),
+            initialValue,
+        );
+
         const remainingSpace = width - textWidth;
-        if (remainingSpace > 80 || words.length < 3) {
+        if (remainingSpace > 100 || words.length < 3) {
             this.page.addTextFragment(x, y, text, fontSize);
 
             return;
         }
 
-        const wordAdjustment = remainingSpace / (words.length - 1);
+        const wordAdjustment = remainingSpace / (words.length - 2);
         let stepX = x;
         for (const word of words) {
-            this.page.addTextFragment(stepX, y, word + " ", fontSize);
-            const wordWidth = this.measureWidth(word + " ", fontSize);
+            this.page.addTextFragment(stepX, y, word, fontSize);
+            const wordWidth = this.measureWidth(word, fontSize);            
             stepX += wordWidth + wordAdjustment;
         }
     }

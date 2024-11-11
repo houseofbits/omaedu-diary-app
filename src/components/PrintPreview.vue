@@ -17,6 +17,7 @@ const userCredentials = inject("userCredentials");
 
 let ctx = null;
 const canvasRef = ref(null);
+const isOverlayVisible = ref(true);
 const printPages = reactive([]);
 
 async function loadImages(userCredentials, chapterId) {
@@ -74,11 +75,6 @@ async function generatePages() {
 }
 
 function print() {
-  //   window.addEventListener(
-  //     "afterprint",
-  //     () => (isPrintPreviewEnabled.value = false)
-  //   );
-
   window.print();
 }
 
@@ -87,6 +83,8 @@ onMounted(async () => {
   if (ctx != null) {
     await document.fonts.load("12pt Corbel");
     await generatePages();
+
+    isOverlayVisible.value = false;
   }
 });
 </script>
@@ -139,6 +137,18 @@ onMounted(async () => {
 
       <div class="pagebreak"></div>
     </template>
+
+    <v-overlay
+      v-model="isOverlayVisible"
+      persistent
+      class="align-center justify-center"
+    >
+      <v-progress-circular
+        color="primary"
+        size="64"
+        indeterminate
+      ></v-progress-circular
+    ></v-overlay>
   </v-container>
 </template>
 

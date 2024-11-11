@@ -19,7 +19,10 @@ onMounted(async () => {
   if (ctx != null) {
     ctx.reset();
     const canvasPrintPageRenderer = new CanvasPrintPageRenderer(scale);
-    await canvasPrintPageRenderer.renderBackground(ctx, getDiaryBackgroundImageUrl());
+    await canvasPrintPageRenderer.renderBackground(
+      ctx,
+      getDiaryBackgroundImageUrl()
+    );
     await canvasPrintPageRenderer.renderText(ctx, props.printPage);
     await canvasPrintPageRenderer.renderImages(ctx, props.printPage);
   }
