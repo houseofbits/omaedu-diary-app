@@ -255,7 +255,9 @@ function print() {
 
 <style>
 .header-bg {
-  background-image: var(--header-bg-image);
-  background-size: cover;
+  /* background-image: var(--header-bg-image); */
+  background-image: url(/assets/images/balti-ziedi.jpg);
+  background-size: cover !important;
+  /* background: linear-gradient(0deg, rgba(94, 90, 85, 0.2) 0%, rgb(201, 192, 181) 100%); */
 }
 </style>

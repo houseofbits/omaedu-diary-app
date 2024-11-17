@@ -18,6 +18,14 @@
     src: url('/assets/fonts/corbel.ttf');
 }
 
+.v-application  {
+    /* background: url(/assets/images/pastel-pink-bokeh-lights.jpg) !important; */
+    background: url(/assets/images/24052.jpg) !important;
+    /* background: url(/assets/images/24049.jpg) !important; */
+
+    background-size: cover !important;
+}
+
 @media print {
     .pagebreak {
         clear: both;

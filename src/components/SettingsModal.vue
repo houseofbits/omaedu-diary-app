@@ -33,7 +33,7 @@ watch(
       title="Settings"
     >
       <v-card-text>
-        <v-row dense>
+        <!-- <v-row dense>
           <v-col>
             <v-select
               v-model="settings.pageTheme"
@@ -43,7 +43,7 @@ watch(
               :items="getPageThemeOptions()"
             ></v-select>
           </v-col>
-        </v-row>
+        </v-row> -->
         <v-row dense>
           <v-col>
             <v-select

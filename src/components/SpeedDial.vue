@@ -8,11 +8,11 @@ const backgroundColor = theme.current.value.colors.background;
 </script>
 
 <template>
-        <v-btn color="primary" size="35" rounded="xl" class="mr-2 mb-2 min-w" @click="emit('click-info')">
+        <v-btn color="primary" size="45" rounded="xl" class="mr-2 mb-2 min-w" @click="emit('click-info')">
           <svg
           xmlns="http://www.w3.org/2000/svg"
-          height="20"
-          width="7.5"
+          height="25"
+          width="12"
           viewBox="0 0 192 512"
         >
           <path
@@ -22,11 +22,11 @@ const backgroundColor = theme.current.value.colors.background;
         </svg>
       </v-btn>
 
-      <v-btn color="primary" size="35" rounded="xl" class="mb-2 min-w" @click="emit('click-settings')">
+      <v-btn color="primary" size="45" rounded="xl" class="mb-2 min-w" @click="emit('click-settings')">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          height="20"
-          width="20"
+          height="25"
+          width="25"
           viewBox="0 0 512 512"
         >
           <path

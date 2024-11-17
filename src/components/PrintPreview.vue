@@ -97,6 +97,27 @@ onMounted(async () => {
     ref="canvasRef"
   ></canvas>
 
+  <v-container max-width="800" class="print-preview-container">
+    <div class="print-page-top-spacer"></div>
+    <template v-for="(page, index) in printPages" :key="index">
+      <print-page-preview :print-page="page"></print-page-preview>
+
+      <div class="pagebreak"></div>
+    </template>
+
+    <v-overlay
+      v-model="isOverlayVisible"
+      persistent
+      class="align-center justify-center"
+    >
+      <v-progress-circular
+        color="primary"
+        size="64"
+        indeterminate
+      ></v-progress-circular
+    ></v-overlay>
+  </v-container>
+
   <v-app-bar :height="50">
     <v-btn variant="tonal" class="ml-3" @click="emit('close')">
       <template v-slot:prepend>
@@ -129,27 +150,6 @@ onMounted(async () => {
       Print</v-btn
     >
   </v-app-bar>
-
-  <v-container max-width="800" class="print-preview-container">
-    <div class="print-page-top-spacer"></div>
-    <template v-for="(page, index) in printPages" :key="index">
-      <print-page-preview :print-page="page"></print-page-preview>
-
-      <div class="pagebreak"></div>
-    </template>
-
-    <v-overlay
-      v-model="isOverlayVisible"
-      persistent
-      class="align-center justify-center"
-    >
-      <v-progress-circular
-        color="primary"
-        size="64"
-        indeterminate
-      ></v-progress-circular
-    ></v-overlay>
-  </v-container>
 </template>
 
 <style>

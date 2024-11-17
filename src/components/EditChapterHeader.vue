@@ -34,8 +34,8 @@ watch(
       <v-col cols="2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          height="20"
-          width="17.5"
+          height="25"
+          width="20"
           viewBox="0 0 448 512"
           class="ml-3 cursor-pointer"
           @click="emit('close')"
@@ -54,8 +54,8 @@ watch(
       <v-col cols="2" class="d-flex align-center justify-end">
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          height="20"
-          width="17.5"
+          height="25"
+          width="20"
           viewBox="0 0 448 512"
           class="ml-3 cursor-pointer"
           @click="isDeleteConfirmationModalOpen = true"
