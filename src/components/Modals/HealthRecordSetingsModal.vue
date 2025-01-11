@@ -3,6 +3,7 @@ import { ref, watch, reactive, inject } from "vue";
 import { useTheme } from "vuetify";
 import { postDiary, putDiary } from "../../api/api";
 import useErrorStack from "../../composables/ErrorStack.js";
+import useHealthRecordSettings from "../../composables/HealthRecordSettings.js";
 
 const { addErrorMessage } = useErrorStack();
 const emit = defineEmits(["created", "update:modelValue"]);
@@ -14,7 +15,11 @@ const props = defineProps({
     default: null,
   },
 });
+
 const theme = useTheme();
+
+const { healthRecordSettings, setHealthRecordSettings } =
+  useHealthRecordSettings();
 
 const userCredentials = inject("userCredentials");
 const form = ref(null);
@@ -26,6 +31,19 @@ const description = ref("");
 const columnNames = ["Date", "Weight", "Height", "Blood pressure"];
 const columnTypes = ["Text", "Date"];
 const columns = reactive([]);
+
+function loadSettingsValues() {
+  if (props.diaryId) {
+    titleText.value = healthRecordSettings.title;
+    description.value = healthRecordSettings.description;
+    columns.length = 0;
+    columns.push(...healthRecordSettings.columns);
+  } else {
+    titleText.value = "";
+    description.value = "";
+    columns.length = 0;
+  }
+}
 
 function requiredValidationRule(value) {
   return !!value || "Required.";
@@ -43,6 +61,7 @@ watch(
   () => props.modelValue,
   () => {
     localIsOpen.value = props.modelValue;
+    loadSettingsValues();
   }
 );
 
@@ -75,11 +94,11 @@ async function create() {
   try {
     const result = await postDiary(
       userCredentials,
-      'healt-record',
+      "health-record",
       titleText.value,
       description.value,
       {
-        columns: columns
+        columns: columns,
       }
     );
 
@@ -108,17 +127,22 @@ async function update() {
       titleText.value,
       description.value,
       {
-        columns: columns
+        columns: columns,
       }
     );
 
-    emit("created", result.diaryId);
+    setHealthRecordSettings({
+      title: titleText.value,
+      description: description.value,
+      settings: {
+        columns: Object.values(columns),
+      },
+    });
   } catch (e) {
     addErrorMessage(
       "Failed to update health record table. Try to refresh the page and if the problem persists please contact the technical support."
     );
   }
-
 
   localIsOpen.value = false;
 }
@@ -160,13 +184,10 @@ async function update() {
         <v-card-text>
           <div class="text-h6 mb-3">Table columns</div>
 
-          <v-row v-if="diaryId" dense class="mb-3">
-            Removing table column cannot be undone.
-          </v-row>
-
           <v-row dense v-for="(column, index) in columns" :key="index">
             <v-col cols="6" class="flex-grow-1 flex-shrink-0">
               <v-combobox
+                v-model="column.title"
                 label="Title"
                 density="compact"
                 :items="columnNames"
@@ -176,6 +197,7 @@ async function update() {
             ></v-col>
             <v-col class="flex-grow-1 flex-shrink-0">
               <v-select
+                v-model="column.type"
                 label="Type"
                 density="compact"
                 :items="columnTypes"
@@ -206,8 +228,10 @@ async function update() {
           </v-row>
 
           <v-row dense>
-            <div v-if="hasMissingColumns" class="text-body-2 text-error">Please add table columns</div>
-            
+            <div v-if="hasMissingColumns" class="text-body-2 text-error">
+              Please add table columns
+            </div>
+
             <v-btn class="ms-auto" @click="addColumn">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -223,6 +247,14 @@ async function update() {
               </svg>
               <span>Add column</span>
             </v-btn>
+          </v-row>
+
+          <v-row
+            v-if="diaryId && columns.length > 0"
+            dense
+            class="text-caption mb-3"
+          >
+            Removing table column cannot be undone.
           </v-row>
         </v-card-text>
 

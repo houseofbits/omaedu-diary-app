@@ -16,7 +16,7 @@ import { useTheme } from "vuetify";
 
 const theme = useTheme();
 
-const emit = defineEmits(["diary-created"]);
+const emit = defineEmits(["diary-created", 'health-record-created']);
 
 const primaryColor = theme.current.value.colors.primary;
 const backgroundColor = theme.current.value.colors.background;
@@ -39,7 +39,7 @@ const isHealthRecordSettingsModalOpen = ref(false);
     @created="(diaryId) => emit('health-record-created', diaryId)"
   ></health-record-setings-modal>
 
-  <v-container fluid class="header-bg mb-2">
+  <v-container fluid class="header-bg">
     <v-row justify="center" class="mb-2">
       <v-col cols="2">
         <v-btn
@@ -104,4 +104,6 @@ const isHealthRecordSettingsModalOpen = ref(false);
       </v-col>
     </v-row>
   </v-container>
+
+  <v-divider :thickness="1" class="border-opacity-75 mb-2"></v-divider>
 </template>

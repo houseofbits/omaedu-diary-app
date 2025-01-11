@@ -115,7 +115,6 @@ async function update() {
       diarySettings
     );
   } catch (e) {
-    console.log(e);
     addErrorMessage(
       "Failed to update diary. Try to refresh the page and if the problem persists please contact the technical support."
     );

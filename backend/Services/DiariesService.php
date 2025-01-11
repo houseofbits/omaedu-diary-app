@@ -66,7 +66,7 @@ class DiariesService
         }
 
         $settings = [];
-        if ($data['type'] == "diary") {
+        if ($diary->getType() == "diary") {
             $settings = (array) $this->createDiarySettingsStructure($data);
         } else {
             $settings = (array) $this->createHealthRecordSettingsStructure($data);
@@ -77,7 +77,7 @@ class DiariesService
             ->setSettings($settings);
 
         $diary = $this->diariesRepository->save($diary);
-        
+
         return $diary->toJson();
     }
 
@@ -96,7 +96,7 @@ class DiariesService
         $this->diariesRepository->remove($diary);
 
         return [];
-    }    
+    }
 
     private function createDiarySettingsStructure(array $data): DiarySettingsStructure
     {

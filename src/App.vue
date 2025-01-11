@@ -10,6 +10,8 @@ import {
 } from "vue";
 import { fetchUser } from "./api/api.js";
 import DiaryView from "./views/DiaryView.vue";
+import HealthRecordView from "./views/HealthRecordView.vue";
+
 import AppHeader from "./components/AppHeader.vue";
 
 import useErrorStack from "./composables/ErrorStack.js";
@@ -52,7 +54,14 @@ const isDiarySelected = computed(() => {
   return selectedDiaryId.value != null && selectedDiaryType.value == "diary";
 });
 
+const isHealthRecordSelected = computed(() => {
+  return (
+    selectedDiaryId.value != null && selectedDiaryType.value == "health-record"
+  );
+});
+
 function selectDiary(id, type) {
+  console.log(id, type);
   selectedDiaryId.value = id;
   selectedDiaryType.value = type;
 }
@@ -91,6 +100,10 @@ function onDiaryCreated(diaryId) {
   selectDiary(diaryId, "diary");
 }
 
+function onHealthRecordTableCreated(diaryId) {
+  selectDiary(diaryId, "health-record");
+}
+
 onMounted(async () => {
   await getUserData();
   await fetchDiaries();
@@ -104,8 +117,18 @@ onMounted(async () => {
       :diary-id="selectedDiaryId"
       @close="closeSelectedView"
     ></diary-view>
+
+    <health-record-view
+      v-else-if="isHealthRecordSelected"
+      :diary-id="selectedDiaryId"
+      @close="closeSelectedView"
+    ></health-record-view>
+
     <template v-else>
-      <app-header @diary-created="onDiaryCreated" />
+      <app-header
+        @diary-created="onDiaryCreated"
+        @health-record-created="onHealthRecordTableCreated"
+      />
 
       <v-container class="pt-2" max-width="1100">
         <v-row dense>
