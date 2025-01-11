@@ -5,7 +5,7 @@ use Backend\Services\RouterService;
 use Backend\Services\ChaptersService;
 use Backend\Services\UserService;
 use Backend\Services\ImageService;
-
+use Backend\Services\DiariesService;
 
 require '../vendor/autoload.php';
 
@@ -27,29 +27,29 @@ $router->POST('user', function ($request, $response) {
 //All chapters
 $router->GET('chapters', function ($request, $response) {
     $chaptersService = Application::get(ChaptersService::class);
-    $response->toJSON($chaptersService->getAll($request->user));
-}, false);
+    $response->toJSON($chaptersService->getAll($request->user, $request->targetId));
+}, true);
 
 //Single chapter
-$router->GET('chapters', function ($request, $response) {
+$router->GET('chapter', function ($request, $response) {
     $chaptersService = Application::get(ChaptersService::class);
     $response->toJSON($chaptersService->get($request->user, $request->targetId));
 }, true);
 
 //Single chapter
-$router->DELETE('chapters', function ($request, $response) {
+$router->DELETE('chapter', function ($request, $response) {
     $chaptersService = Application::get(ChaptersService::class);
     $response->toJSON($chaptersService->delete($request->user, $request->targetId));
 }, true);
 
 //Create chapter
-$router->POST('chapters', function ($request, $response) {
+$router->POST('chapter', function ($request, $response) {
     $chaptersService = Application::get(ChaptersService::class);
     $response->toJSON($chaptersService->create($request->user, $request->getJSON()));
 }, false);
 
 //Update chapter
-$router->PUT('chapters', function ($request, $response) {
+$router->PUT('chapter', function ($request, $response) {
     $chaptersService = Application::get(ChaptersService::class);
     $response->toJSON($chaptersService->update($request->user, $request->targetId, $request->getJSON()));
 }, true);
@@ -73,4 +73,31 @@ $router->DELETE('images', function ($request, $response) {
 $router->GET('img', function ($request, $response) {
     $imageService = Application::get(ImageService::class);
     $response->filePassthru($imageService->getImagePath($request->user, $request->targetId));
+}, true);
+
+//All diaries
+$router->GET('diaries', function ($request, $response) {
+    $diariesService = Application::get(DiariesService::class);
+    $response->toJSON($diariesService->getAll($request->user));
+}, false);
+
+$router->GET('diaries', function ($request, $response) {
+    $diariesService = Application::get(DiariesService::class);
+    $response->toJSON($diariesService->get($request->user, $request->targetId));
+}, true);
+
+$router->POST('diaries', function ($request, $response) {
+    $diariesService = Application::get(DiariesService::class);
+    $response->toJSON($diariesService->create($request->user, $request->getJSON()));
+});
+
+$router->PUT('diaries', function ($request, $response) {
+    $diariesService = Application::get(DiariesService::class);
+    $response->toJSON($diariesService->update($request->user, $request->targetId, $request->getJSON()));
+}, true);
+
+//Single diary
+$router->DELETE('diaries', function ($request, $response) {
+    $diariesService = Application::get(DiariesService::class);
+    $response->toJSON($diariesService->delete($request->user, $request->targetId));
 }, true);

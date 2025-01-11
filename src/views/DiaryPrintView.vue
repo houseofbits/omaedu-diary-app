@@ -1,11 +1,11 @@
 <script setup>
 import { computed, onMounted, ref, reactive, watch, inject } from "vue";
 import _ from "lodash";
-import { fetchChapter, fetchChapterImages, imageUrl } from "./../api/api.js";
-import { PAGE_LAYOUTS } from "../constants/pageLayouts";
-import CanvasPrintPageBuilder from "../helpers/CanvasPrintPageBuilder";
-import PrintPagePreview from "./PrintPagePreview.vue";
-import useSettings from "../composables/Settings";
+import { fetchChapter, fetchChapterImages, imageUrl } from "../api/api.js";
+import { PAGE_LAYOUTS } from "../constants/pageLayouts.js";
+import CanvasPrintPageBuilder from "../helpers/CanvasPrintPageBuilder.js";
+import PrintPagePreview from "../components/PrintPagePreview.vue";
+import useSettings from "../composables/Settings.js";
 
 const { settings } = useSettings();
 const emit = defineEmits(["close"]);

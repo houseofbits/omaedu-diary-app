@@ -39,14 +39,14 @@ export async function updateUser(userCredentials, userData) {
   return await response.json();
 }
 
-
-export async function fetchAllChapters(userCredentials) {
+export async function fetchAllChapters(userCredentials, diaryId) {
   const response = await fetch(
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
       target: "chapters",
       credentials: userCredentials,
+      id: diaryId,
     }).toString(),
     {
       method: "GET",
@@ -61,7 +61,7 @@ export async function fetchChapter(userCredentials, id) {
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
-      target: "chapters",
+      target: "chapter",
       credentials: userCredentials,
       id
     }).toString(),
@@ -78,7 +78,7 @@ export async function deleteChapter(userCredentials, id) {
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
-      target: "chapters",
+      target: "chapter",
       credentials: userCredentials,
       id
     }).toString(),
@@ -95,7 +95,7 @@ export async function postChapter(userCredentials, chapter) {
     API_ENDPOINT +
     "?" +
     new URLSearchParams({
-      target: "chapters",
+      target: "chapter",
       credentials: userCredentials,
     }).toString(),
     {
@@ -115,7 +115,7 @@ export async function putChapter(userCredentials, chapter) {
   const url = API_ENDPOINT +
     "?" +
     new URLSearchParams({
-      target: "chapters",
+      target: "chapter",
       credentials: userCredentials,
       id: chapter.id,
     }).toString();
@@ -210,4 +210,105 @@ export function imageUrl(userCredentials, imageId) {
       credentials: userCredentials,
       id: imageId,
     }).toString();
+}
+
+export async function postDiary(userCredentials, type, title, description, settings) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "diaries",
+      credentials: userCredentials,
+    }).toString(),
+    {
+      method: "POST",
+      body: JSON.stringify({
+        type,
+        title,
+        description,
+        settings
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  return await response.json();
+}
+
+export async function putDiary(userCredentials, diaryId, title, description, settings) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "diaries",
+      credentials: userCredentials,
+      id: diaryId,
+    }).toString(),
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        title,
+        description,
+        settings
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  return await response.json();
+}
+
+
+export async function fetchDiary(userCredentials, id) {
+    const response = await fetch(
+      API_ENDPOINT +
+      "?" +
+      new URLSearchParams({
+        target: "diaries",
+        credentials: userCredentials,
+        id
+      }).toString(),
+      {
+        method: "GET",
+      }
+    );
+  
+    return await response.json();
+  }
+
+export async function fetchAllDiaries(userCredentials) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "diaries",
+      credentials: userCredentials,
+    }).toString(),
+    {
+      method: "GET",
+    }
+  );
+
+  return await response.json();
+}
+
+export async function deleteDiary(userCredentials, id) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "diaries",
+      credentials: userCredentials,
+      id
+    }).toString(),
+    {
+      method: "DELETE",
+    }
+  );
+
+  return await response.json();
 }

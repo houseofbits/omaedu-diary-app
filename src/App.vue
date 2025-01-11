@@ -8,51 +8,71 @@ import {
   nextTick,
   watch,
 } from "vue";
-import EditChapter from "./components/EditChapter.vue";
-import Chapters from "./components/Chapters.vue";
-import PrintPreview from "./components/PrintPreview.vue";
-import ChaptersHeader from "./components/ChaptersHeader.vue";
-import {
-  fetchUser,
-  updateUser,
-  fetchAllChapters,
-  fetchChapter,
-  postChapter,
-  putChapter,
-  deleteChapter,
-} from "./api/api.js";
-import PdfBuilder from "./helpers/PdfBuilder";
+import { fetchUser } from "./api/api.js";
+import DiaryView from "./views/DiaryView.vue";
+import AppHeader from "./components/AppHeader.vue";
+
+import useErrorStack from "./composables/ErrorStack.js";
+import useSettings from "./composables/Settings.js";
 import { useTheme } from "vuetify";
-import useErrorStack from "./composables/ErrorStack";
-import useSettings from "./composables/Settings";
-import _ from "lodash";
+import { fetchAllDiaries } from "./api/api";
 
-const { settings, setSettings, getPageBackgroundImageUrl, getDiaryBackgroundImageUrl } = useSettings();
+const {
+  settings,
+  setSettings,
+  getPageBackgroundImageUrl,
+  getDiaryBackgroundImageUrl,
+} = useSettings();
 const { errorMessages, addErrorMessage } = useErrorStack();
+
 const theme = useTheme();
-const secondaryColor = theme.current.value.colors.secondary;
 const userCredentials = inject("userCredentials");
+
 let user = ref(null);
-const chapters = reactive([]);
-const selectedChapter = ref(null);
-const pdfBuilder = new PdfBuilder();
 const isErrorVisible = ref(true);
-const isPdfGenerating = ref(false);
-const isPrintPreviewEnabled = ref(false);
-const errorMessage = ref(
-  "Failed to save the chapter. Try to refresh the page and if the problem persists please contact the technical support."
-);
 
-async function selectChapter(index) {
-  let chapterData = await fetchChapter(userCredentials, chapters[index].id);
+const primaryColor = theme.current.value.colors.primary;
+const backgroundColor = theme.current.value.colors.background;
 
-  chapters[index].title = chapterData.title;
-  chapters[index].story = chapterData.story;
-  chapters[index].location = chapterData.location;
-  chapters[index].period = chapterData.period;
-  chapters[index].layouts = chapterData.layouts;
+const diaries = reactive([]);
+const selectedDiaryId = ref(null);
+const selectedDiaryType = ref("diary");
 
-  selectedChapter.value = index;
+const cssThemeProps = computed(() => {
+  return {
+    "--header-bg-image": "url(" + getPageBackgroundImageUrl() + ")",
+  };
+});
+
+function calculateSnackbarMargin(i) {
+  return i * 60 + "px";
+}
+
+const isDiarySelected = computed(() => {
+  return selectedDiaryId.value != null && selectedDiaryType.value == "diary";
+});
+
+function selectDiary(id, type) {
+  selectedDiaryId.value = id;
+  selectedDiaryType.value = type;
+}
+
+async function fetchDiaries() {
+  try {
+    const diariesData = await fetchAllDiaries(userCredentials);
+
+    diaries.length = 0;
+    diaries.push(...diariesData);
+  } catch (e) {
+    addErrorMessage(
+      "Failed to load diaries. Try to refresh the page and if the problem persists please contact the technical support."
+    );
+  }
+}
+
+function closeSelectedView() {
+  selectedDiaryId.value = null;
+  fetchDiaries();
 }
 
 async function getUserData() {
@@ -67,178 +87,83 @@ async function getUserData() {
   }
 }
 
-async function addChapterAndEdit() {
-  const data = {
-    id: null,
-    title: "Chapter title",
-    period: new Date().toISOString().slice(0, 10),
-    location: "",
-    story: "",
-    layouts: [],
-    createdAt: new Date().toISOString(),
-  };
-
-  try {
-    const chapterData = await postChapter(userCredentials, data);
-    data.id = chapterData.id;
-
-    chapters.unshift(data);
-    selectedChapter.value = 0;
-  } catch (error) {
-    addErrorMessage(
-      "Failed to add new chapter. Try to refresh the page and if the problem persists please contact the technical support."
-    );
-  }
-
-  await getUserData();
+function onDiaryCreated(diaryId) {
+  selectDiary(diaryId, "diary");
 }
-
-async function updateChapter(chapter) {
-  chapters[selectedChapter.value] = chapter;
-
-  try {
-    await putChapter(userCredentials, chapter);
-  } catch (error) {
-    addErrorMessage(
-      "Failed to update chapter. Try to refresh the page and if the problem persists please contact the technical support."
-    );
-  }
-}
-
-async function onDeleteChapter(chapterId) {
-  try {
-    await deleteChapter(userCredentials, chapterId);
-    selectedChapter.value = null;
-    const index = chapters.findIndex((chapter) => chapter.id === chapterId);
-    if (index >= 0) {
-      chapters.splice(index, 1);
-    }
-  } catch (error) {
-    addErrorMessage(
-      "Failed to remove chapter. Try to refresh the page and if the problem persists please contact the technical support."
-    );
-  }
-}
-
-async function updateTitle(title) {
-  user.value.diaryTitle = title;
-
-  try {
-    await updateUser(userCredentials, user.value);
-  } catch (error) {
-    addErrorMessage(
-      "Failed to update title. Try to refresh the page and if the problem persists please contact the technical support."
-    );
-  }
-}
-
-watch(
-  () => settings,
-  async () => {
-    user.value.settings = _.cloneDeep(settings);
-
-    try {
-      await updateUser(userCredentials, user.value);
-    } catch (error) {
-      addErrorMessage(
-        "Failed to update title. Try to refresh the page and if the problem persists please contact the technical support."
-      );
-    }
-  },
-  { deep: true }
-);
 
 onMounted(async () => {
-  try {
-    let chaptersData = await fetchAllChapters(userCredentials);
-    chaptersData = chaptersData.map((chapter) => {
-      return {
-        id: chapter.id,
-        title: chapter.title,
-        period: chapter.period,
-        location: "",
-        story: "",
-        layouts: [],
-        createdAt: chapter.createdAt,
-      };
-    });
-
-    chapters.length = 0;
-    chapters.push(...chaptersData);
-  } catch (error) {
-    addErrorMessage(
-      "Failed to load list of chapters. Try to refresh the page and if the problem persists please contact the technical support."
-    );
-  }
-
   await getUserData();
+  await fetchDiaries();
 });
-
-async function createPdf() {
-  isPdfGenerating.value = true;
-
-  const pdfDocument = await pdfBuilder.build(
-    userCredentials,
-    chapters,
-    settings.isPageNumberingEnabled,
-    settings.isTextJustifyEnabled,
-    getDiaryBackgroundImageUrl()
-  );
-  await pdfBuilder.download(pdfDocument, user.value.diaryTitle);
-
-  isPdfGenerating.value = false;
-}
-
-const cssThemeProps = computed(() => {
-  return {
-    "--header-bg-image": "url(" + getPageBackgroundImageUrl() + ")",
-  };
-});
-
-const datePeriod = computed(() => {
-  return user.value.datePeriodFrom + " - " + user.value.datePeriodTo;
-});
-
-function calculateSnackbarMargin(i) {
-  return i * 60 + "px";
-}
-
-function print() {
-  isPrintPreviewEnabled.value = true;
-}
 </script>
 
 <template>
   <v-app v-if="user" :style="cssThemeProps">
-    <template v-if="!isPrintPreviewEnabled">
-      <edit-chapter
-        v-if="selectedChapter !== null"
-        :chapter="chapters[selectedChapter]"
-        @close="selectedChapter = null"
-        @update="updateChapter"
-        @delete="onDeleteChapter"
-      ></edit-chapter>
+    <diary-view
+      v-if="isDiarySelected"
+      :diary-id="selectedDiaryId"
+      @close="closeSelectedView"
+    ></diary-view>
+    <template v-else>
+      <app-header @diary-created="onDiaryCreated" />
 
-      <template v-else>
-        <chapters-header
-          :title="user.diaryTitle"
-          :date-period="datePeriod"
-          :is-chapters-empty="chapters.length == 0"
-          :is-pdf-generating="isPdfGenerating"
-          @add-chapter="addChapterAndEdit"
-          @update-title="updateTitle"
-          @download="createPdf"
-          @print="print"
-        />
-        <chapters :chapters="chapters" @select="selectChapter" />
-      </template>
+      <v-container class="pt-2" max-width="1100">
+        <v-row dense>
+          <v-col v-for="(diary, i) in diaries" :key="i" cols="12" md="4">
+            <v-card
+              variant="elevated"
+              class="mx-auto"
+              color="surface"
+              max-width="344"
+              link
+              @click="selectDiary(diary.id, diary.type)"
+            >
+              <v-card-item>
+                <v-card-title>
+                  <div class="d-flex">
+                    <div class="flex-grow-1">{{ diary.title }}</div>
+
+                    <svg
+                      v-if="diary.type == 'diary'"
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="20"
+                      width="20"
+                      viewBox="0 0 448 512"
+                    >
+                      >
+                      <path
+                        :fill="primaryColor"
+                        d="M96 0C43 0 0 43 0 96L0 416c0 53 43 96 96 96l288 0 32 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l0-64c17.7 0 32-14.3 32-32l0-320c0-17.7-14.3-32-32-32L384 0 96 0zm0 384l256 0 0 64L96 448c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16zm16 48l192 0c8.8 0 16 7.2 16 16s-7.2 16-16 16l-192 0c-8.8 0-16-7.2-16-16s7.2-16 16-16z"
+                      />
+                    </svg>
+                    <svg
+                      v-else
+                      xmlns="http://www.w3.org/2000/svg"
+                      height="20"
+                      width="20"
+                      viewBox="0 0 512 512"
+                    >
+                      <path
+                        :fill="primaryColor"
+                        d="M152 24c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L64 64C28.7 64 0 92.7 0 128l0 16 0 48L0 448c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-256 0-48 0-16c0-35.3-28.7-64-64-64l-40 0 0-40c0-13.3-10.7-24-24-24s-24 10.7-24 24l0 40L152 64l0-40zM48 192l80 0 0 56-80 0 0-56zm0 104l80 0 0 64-80 0 0-64zm128 0l96 0 0 64-96 0 0-64zm144 0l80 0 0 64-80 0 0-64zm80-48l-80 0 0-56 80 0 0 56zm0 160l0 40c0 8.8-7.2 16-16 16l-64 0 0-56 80 0zm-128 0l0 56-96 0 0-56 96 0zm-144 0l0 56-64 0c-8.8 0-16-7.2-16-16l0-40 80 0zM272 248l-96 0 0-56 96 0 0 56z"
+                      />
+                    </svg>
+                  </div>
+                </v-card-title>
+
+                <v-card-subtitle>
+                  {{ diary.type == "diary" ? "Diary" : "Health record" }}
+                </v-card-subtitle>
+              </v-card-item>
+
+              <v-card-text>{{ diary.description }}</v-card-text>
+            </v-card>
+
+            <div class="text-center text-caption"></div>
+          </v-col>
+        </v-row>
+      </v-container>
     </template>
-
-    <print-preview
-      v-else
-      :chapters="chapters"
-      @close="isPrintPreviewEnabled = false"
-    ></print-preview>
   </v-app>
 
   <v-snackbar
@@ -254,10 +179,4 @@ function print() {
 </template>
 
 <style>
-.header-bg {
-  /* background-image: var(--header-bg-image); */
-  background-image: url(/assets/images/balti-ziedi.jpg);
-  background-size: cover !important;
-  /* background: linear-gradient(0deg, rgba(94, 90, 85, 0.2) 0%, rgb(201, 192, 181) 100%); */
-}
 </style>

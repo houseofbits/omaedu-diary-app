@@ -3,7 +3,7 @@ import { computed, onMounted, ref, reactive, watch } from "vue";
 import CanvasPrintPageBuilder from "../helpers/CanvasPrintPageBuilder";
 import CanvasPrintPageRenderer from "../helpers/CanvasPrintPageRenderer";
 import { PAGE_LAYOUTS } from "../constants/pageLayouts";
-import LayoutsModal from "./LayoutsModal.vue";
+import LayoutsModal from "./Modals/LayoutsModal.vue";
 import _ from "lodash";
 import useSettings from "../composables/Settings";
 

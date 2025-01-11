@@ -6,6 +6,7 @@ use DateTime;
 use Backend\Entities\Image;
 use Backend\Entities\User;
 use Backend\Entities\Chapter;
+use Backend\Entities\Diary;
 use Backend\Repositories\ImagesRepository;
 use Backend\Repositories\ChaptersRepository;
 use Backend\Exceptions\HttpException;
@@ -22,7 +23,7 @@ class ImageService
     public function getChapterImages(User $user, int $chapterId): array
     {
         $chapter = $this->chaptersRepository->getChapter($chapterId);
-        if (!$chapter || $chapter->getUser()?->getId() !== $user->getId()) {
+        if (!$chapter) {
             throw new HttpException(500, "Not authorized");
         }
 
@@ -36,7 +37,7 @@ class ImageService
         }
 
         $chapter = $this->chaptersRepository->getChapter($chapterId);
-        if (!$chapter || $chapter->getUser()?->getId() !== $user->getId()) {
+        if (!$chapter || $chapter->getDiary()->getUser()->getId() !== $user->getId()) {
             throw new HttpException(500, "Not authorized");
         }
 
@@ -74,7 +75,7 @@ class ImageService
             throw new HttpException(500, "Not found");
         }
 
-        if ($image->getChapter()->getUser()->getId() !== $user->getId()) {
+        if ($image->getChapter()->getDiary()->getUser()->getId() !== $user->getId()) {
             throw new HttpException(500, "Not authorized");
         }
 
@@ -92,7 +93,7 @@ class ImageService
             throw new HttpException(500, "Not found");
         }
 
-        if ($image->getChapter()->getUser()->getId() !== $user->getId()) {
+        if ($image->getChapter()->getDiary()->getUser()->getId() !== $user->getId()) {
             throw new HttpException(500, "Not authorized");
         }
 
@@ -102,7 +103,7 @@ class ImageService
 
         unlink($imagePath);
     }
-    
+
     private function createData(Image $image): array
     {
         return [

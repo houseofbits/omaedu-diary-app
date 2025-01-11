@@ -19,7 +19,7 @@ class EntityManagerInstance extends EntityManager
         $config->setMetadataDriverImpl($driverImpl);
         $config->setProxyDir('backend/Proxies');
         $config->setProxyNamespace('Backend\Proxies');
-        $config->setAutoGenerateProxyClasses(false);
+        $config->setAutoGenerateProxyClasses(true);
 
         $dbParams = array(
             'driver' => 'mysqli',

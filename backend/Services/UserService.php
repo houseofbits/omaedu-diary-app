@@ -2,10 +2,8 @@
 
 namespace Backend\Services;
 
-use DateTime;
 use Backend\Repositories\UsersRepository;
 use Backend\Entities\User;
-use Backend\Entities\Chapter;
 use Backend\Structures\SettingsStructure;
 
 class UserService
@@ -18,21 +16,8 @@ class UserService
 
     public function get(User $user): array
     {
-        $initialDate = new DateTime("now");
-        $minDate = array_reduce($user->getChapters()->toArray(), function (DateTime $carry, Chapter $chapter) {
-            return ($chapter->getCreatedAt() < $carry) ? $chapter->getCreatedAt() : $carry;
-        }, $initialDate);
-
-        $initialDate = new DateTime("now");
-        $maxDate = array_reduce($user->getChapters()->toArray(), function (DateTime $carry, Chapter $chapter) {
-            return ($chapter->getCreatedAt() > $carry) ? $chapter->getCreatedAt() : $carry;
-        }, $initialDate);
-
         return [
-            'diaryTitle' => $user->getDiaryTitle(),
             'settings' => $user->getSettings(),
-            'datePeriodFrom' => $minDate->format('Y-m-d'),
-            'datePeriodTo' => $maxDate->format('Y-m-d'),
         ];
     }
 
@@ -74,7 +59,6 @@ class UserService
             $user = new User();
             $user
                 ->setUserName($userName)
-                ->setDiaryTitle("Diary title")
                 ->setSettings(new SettingsStructure());
 
             $this->usersRepository->persist($user, true);
@@ -92,7 +76,6 @@ class UserService
         $settings->isTextJustifyEnabled = $userData['settings']['isTextJustifyEnabled'];
 
         $user->setSettings($settings);
-        $user->setDiaryTitle($userData['diaryTitle']);
 
         $this->usersRepository->persist($user, true);
 

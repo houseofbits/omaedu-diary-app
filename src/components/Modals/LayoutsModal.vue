@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, computed } from "vue";
-import { PAGE_LAYOUTS } from "../constants/pageLayouts";
+import { PAGE_LAYOUTS } from "../../constants/pageLayouts";
 
 const props = defineProps({
   modelValue: Boolean,

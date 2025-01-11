@@ -4,7 +4,10 @@ namespace Backend\Services;
 
 use DateTime;
 use Backend\Repositories\ChaptersRepository;
+use Backend\Repositories\DiariesRepository;
+
 use Backend\Entities\User;
+use Backend\Entities\Diary;
 use Backend\Entities\Chapter;
 use Backend\Exceptions\HttpException;
 
@@ -12,14 +15,21 @@ class ChaptersService
 {
     public function __construct(
         private ChaptersRepository $chaptersRepository,
+        private DiariesRepository $diariesRepository,
         private ImageService $imageService,
     ) {
 
     }
 
-    public function getAll(User $user)
+    public function getAll(User $user, int $diaryId)
     {
-        $chapters = $user->getChapters()->toArray();
+        $diary = $this->diariesRepository->findOneBy(['id' => $diaryId]);
+
+        if (!$diary) {
+            throw new HttpException(404, "Diary not found");
+        }
+
+        $chapters = $diary->getChapters()->toArray();    
 
         usort($chapters, function (Chapter $a, Chapter $b) {
             return $b->getCreatedAt() <=> $a->getCreatedAt();
@@ -30,9 +40,9 @@ class ChaptersService
 
     public function get(User $user, int $id)
     {
-        $chapter = $this->chaptersRepository->getChapter($id);
+        $chapter = $this->chaptersRepository->findOneBy(['id' => $id]);
 
-        if (!$chapter || $chapter->getUser()?->getId() !== $user->getId()) {
+        if (!$chapter) {
             throw new HttpException();
         }
 
@@ -43,7 +53,7 @@ class ChaptersService
     {
         $chapter = $this->chaptersRepository->getChapter($id);
 
-        if (!$chapter || $chapter->getUser()?->getId() !== $user->getId()) {
+        if (!$chapter || $chapter->getDiary()?->getUser()->getId() !== $user->getId()) {
             throw new HttpException();
         }
 
@@ -58,9 +68,15 @@ class ChaptersService
 
     public function create(User $user, array $data): array
     {
+        $diary = $this->diariesRepository->findOneBy(['id' => $data['diaryId']]);
+
+        if (!$diary) {
+            throw new HttpException(404, "Diary not found");
+        }
+
         $chapter = new Chapter();
 
-        $chapter->setUser($user)
+        $chapter->setDiary($diary)
             ->setTitle(htmlspecialchars($data['title']))
             ->setStory(htmlspecialchars($data['story']))
             ->setLocation(htmlspecialchars($data['location']))
@@ -76,7 +92,7 @@ class ChaptersService
     {
         $chapter = $this->chaptersRepository->getChapter($chapterId);
 
-        if (!$chapter || $chapter->getUser()?->getId() !== $user->getId()) {
+        if (!$chapter || $chapter->getDiary()?->getUser()->getId() !== $user->getId()) {
             throw new HttpException();
         }
 
@@ -110,6 +126,7 @@ class ChaptersService
             "location" => htmlspecialchars_decode($chapter->getLocation()),
             "period" => htmlspecialchars_decode($chapter->getPeriod()),
             "layouts" => $chapter->getLayouts(),
+            "diaryId" => $chapter->getDiary()->getId(),
             "createdAt" => $chapter->getCreatedAt()->format('Y-m-d H:i:s'),
         ];
     }

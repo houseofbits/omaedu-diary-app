@@ -20,7 +20,7 @@ class User
     public function __construct(
     ) {
         $this->setCreatedAt(new DateTime("now"));    
-        $this->chapters = new ArrayCollection();
+        $this->diaries = new ArrayCollection();
     }
 
     /**
@@ -46,9 +46,9 @@ class User
     protected array $settings = [];
 
     /**
-     * @ORM\OneToMany(targetEntity="Chapter", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Diary", mappedBy="user")
      */
-    private Collection $chapters;
+    private Collection $diaries;
 
     public function setId(int $id): User
     {
@@ -95,17 +95,10 @@ class User
     }   
 
     /**
-     * @return Collection<int, Chapter>
+     * @return Collection<int, Diary>
      */
-    public function getChapters(): Collection
+    public function getDiaries(): Collection
     {
-        return $this->chapters;
+        return $this->diaries;
     }    
-    
-    public function toJson() {
-        return [
-            'diaryTitle' => $this->diaryTitle,
-            'settings' => $this->settings,
-        ];
-    }
 }

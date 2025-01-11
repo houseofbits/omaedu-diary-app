@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Backend\Entities\Traits\TimestampableTrait;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Backend\Entities\Diary;
 
 /**
  * @ORM\Entity
@@ -30,10 +31,10 @@ class Chapter
     protected int|null $id = null;
 
     /**
-     *  @ORM\ManyToOne(targetEntity="User") 
-     *  @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *  @ORM\ManyToOne(targetEntity="Diary") 
+     *  @ORM\JoinColumn(name="diary_id", referencedColumnName="id")
      */
-    protected User|null $user = null;
+    protected Diary|null $diary = null;    
 
     /**
      * @ORM\Column(type="string", length=255, nullable=false)
@@ -84,11 +85,11 @@ class Chapter
         return $this;
     }
 
-    public function setUser(User $user): Chapter
+    public function setDiary(Diary $diary): Chapter
     {
-        $this->user = $user;
+        $this->diary = $diary;
         return $this;
-    }
+    }    
 
     public function setLocation(string $location): Chapter
     {
@@ -133,10 +134,10 @@ class Chapter
         return $this->period;
     }
 
-    public function getUser(): ?User
+    public function getDiary(): ?Diary
     {
-        return $this->user;
-    }
+        return $this->diary;
+    }    
 
     /**
      * @return Collection<int, Image>

@@ -1,8 +1,8 @@
 <script setup>
 import { ref, reactive, watch, onMounted, inject, computed } from "vue";
 import { clone, set } from "lodash";
-import EditChapterHeader from "./EditChapterHeader.vue";
-import PagePreview from "./PagePreview.vue";
+import EditChapterHeader from "../components/ChapterEditHeader.vue";
+import PagePreview from "../components/PagePreview.vue";
 import { useTheme } from "vuetify";
 import {
   fetchChapterImages,
@@ -11,7 +11,7 @@ import {
   imageUrl,
 } from "../api/api.js";
 import _ from "lodash";
-import useErrorStack from "../composables/ErrorStack";
+import useErrorStack from "../composables/ErrorStack.js";
 
 const { addErrorMessage } = useErrorStack();
 const userCredentials = inject("userCredentials");
