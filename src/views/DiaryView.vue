@@ -149,7 +149,6 @@ onMounted(async () => {
     chapters.length = 0;
     chapters.push(...chaptersData);
   } catch (error) {
-    console.log(error);
     addErrorMessage(
       "Failed to load list of chapters. Try to refresh the page and if the problem persists please contact the technical support."
     );

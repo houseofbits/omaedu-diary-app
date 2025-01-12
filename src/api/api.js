@@ -264,21 +264,21 @@ export async function putDiary(userCredentials, diaryId, title, description, set
 
 
 export async function fetchDiary(userCredentials, id) {
-    const response = await fetch(
-      API_ENDPOINT +
-      "?" +
-      new URLSearchParams({
-        target: "diaries",
-        credentials: userCredentials,
-        id
-      }).toString(),
-      {
-        method: "GET",
-      }
-    );
-  
-    return await response.json();
-  }
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "diaries",
+      credentials: userCredentials,
+      id
+    }).toString(),
+    {
+      method: "GET",
+    }
+  );
+
+  return await response.json();
+}
 
 export async function fetchAllDiaries(userCredentials) {
   const response = await fetch(
@@ -311,4 +311,94 @@ export async function deleteDiary(userCredentials, id) {
   );
 
   return await response.json();
+}
+
+export async function fetchAllHealthRecords(userCredentials, diaryId) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "health-records",
+      credentials: userCredentials,
+      id: diaryId,
+    }).toString(),
+    {
+      method: "GET",
+    }
+  );
+
+  return await response.json();
+}
+
+export async function postHealthRecord(userCredentials, diaryId, data) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "health-records",
+      credentials: userCredentials,
+    }).toString(),
+    {
+      method: "POST",
+      body: JSON.stringify({
+        diaryId, data
+      }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  );
+
+  return await response.json();
+}
+
+export async function deleteHealthRecord(userCredentials, id) {
+  const response = await fetch(
+    API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "health-records",
+      credentials: userCredentials,
+      id
+    }).toString(),
+    {
+      method: "DELETE",
+    }
+  );
+
+  return await response.json();
+}
+
+export async function putHealthRecord(userCredentials, id, data) {
+
+  const url = API_ENDPOINT +
+    "?" +
+    new URLSearchParams({
+      target: "health-records",
+      credentials: userCredentials,
+      id,
+    }).toString();
+
+  abortControllers[url]?.abort();
+  abortControllers[url] = new AbortController();
+
+  try {
+    const response = await fetch(
+      url,
+      {
+        method: "PUT",
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        signal: abortControllers[url].signal,
+      }
+    );
+
+    return await response.json();
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      throw error;
+    }
+  }
 }

@@ -61,7 +61,6 @@ const isHealthRecordSelected = computed(() => {
 });
 
 function selectDiary(id, type) {
-  console.log(id, type);
   selectedDiaryId.value = id;
   selectedDiaryType.value = type;
 }

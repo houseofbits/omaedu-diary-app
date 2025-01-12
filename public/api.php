@@ -6,6 +6,7 @@ use Backend\Services\ChaptersService;
 use Backend\Services\UserService;
 use Backend\Services\ImageService;
 use Backend\Services\DiariesService;
+use Backend\Services\HealthRecordService;
 
 require '../vendor/autoload.php';
 
@@ -100,4 +101,28 @@ $router->PUT('diaries', function ($request, $response) {
 $router->DELETE('diaries', function ($request, $response) {
     $diariesService = Application::get(DiariesService::class);
     $response->toJSON($diariesService->delete($request->user, $request->targetId));
+}, true);
+
+$router->GET('health-records', function ($request, $response) {
+    $healthRecordService = Application::get(HealthRecordService::class);
+    $response->toJSON($healthRecordService->getAll($request->user, $request->targetId));
+}, true);
+
+//Create health record
+$router->POST('health-records', function ($request, $response) {
+    $healthRecordService = Application::get(HealthRecordService::class);
+    $response->toJSON($healthRecordService->create($request->user, $request->getJSON()));
+}, false);
+
+//Update health record
+$router->PUT('health-records', function ($request, $response) {
+    $healthRecordService = Application::get(HealthRecordService::class);
+    $response->toJSON($healthRecordService->update($request->user, $request->targetId, $request->getJSON()));
+}, true);
+
+
+//Single health record
+$router->DELETE('health-records', function ($request, $response) {
+    $healthRecordService = Application::get(HealthRecordService::class);
+    $response->toJSON($healthRecordService->delete($request->user, $request->targetId));
 }, true);

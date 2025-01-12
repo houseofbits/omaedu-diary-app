@@ -44,7 +44,6 @@ async function confirmDeletion() {
     emit('close');
 
   } catch (error) {
-    console.log(error);
     addErrorMessage(
       "Failed to delete diary. Try to refresh the page and if the problem persists please contact the technical support."
     );

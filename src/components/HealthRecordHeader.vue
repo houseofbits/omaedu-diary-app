@@ -31,8 +31,8 @@ const backgroundColor = theme.current.value.colors.background;
 const isSettingsModalOpen = ref(false);
 const isDeleteConfirmationModalOpen = ref(false);
 
-function addChapterAndEdit() {
-  emit("add-chapter");
+function addAndEdit() {
+  emit("add-health-record");
 }
 
 async function confirmDeletion() {
@@ -40,7 +40,6 @@ async function confirmDeletion() {
     const data = await deleteDiary(userCredentials, props.diaryId);
     emit("close");
   } catch (error) {
-    console.log(error);
     addErrorMessage(
       "Failed to delete health record table. Try to refresh the page and if the problem persists please contact the technical support."
     );
@@ -123,14 +122,13 @@ async function confirmDeletion() {
     </v-row>
 
     <v-fab
-      v-if="!isChaptersEmpty"
       extended
       location="bottom end"
       absolute
       offset
       color="primary"
       class="new-chapter-button"
-      @click="addChapterAndEdit"
+      @click="addAndEdit"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

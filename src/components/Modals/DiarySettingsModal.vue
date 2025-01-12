@@ -81,7 +81,7 @@ async function create() {
   try {
     const result = await postDiary(
       userCredentials,
-      'diary',
+      "diary",
       titleText.value,
       description.value,
       diarySettings
@@ -182,13 +182,12 @@ async function update() {
         </v-card-text>
 
         <template v-slot:actions>
-          <v-btn
-            v-if="diaryId !== null"
-            class="ms-auto"
-            text="Save"
-            @click="update"
-          ></v-btn>
-          <v-btn v-else class="ms-auto" text="Create" @click="create"></v-btn>
+          <div class="d-flex justify-end">
+            <v-btn text="Cancel" @click="localIsOpen = false" class="mr-2"></v-btn>
+
+            <v-btn v-if="diaryId !== null" text="Save" @click="update"></v-btn>
+            <v-btn v-else class="ms-auto" text="Create" @click="create"></v-btn>
+          </div>
         </template>
       </v-card>
     </v-form>
