@@ -11,9 +11,7 @@ import {
 import { useTheme } from "vuetify";
 import DiarySettingsModal from "./Modals/DiarySettingsModal.vue";
 import useDiarySettings from "../composables/DiarySettings";
-import {
-  deleteDiary
-} from "../api/api.js";
+import { deleteDiary } from "../api/api.js";
 import useErrorStack from "../composables/ErrorStack.js";
 
 const userCredentials = inject("userCredentials");
@@ -41,8 +39,7 @@ function addChapterAndEdit() {
 async function confirmDeletion() {
   try {
     const data = await deleteDiary(userCredentials, props.diaryId);
-    emit('close');
-
+    emit("close");
   } catch (error) {
     addErrorMessage(
       "Failed to delete diary. Try to refresh the page and if the problem persists please contact the technical support."
@@ -60,8 +57,8 @@ async function confirmDeletion() {
   ></diary-settings-modal>
 
   <v-container fluid class="header-bg pb-8">
-    <v-row no-gutters justify="center">
-      <v-col cols="2">
+    <v-row no-gutters justify="center d-flex flex-wrap">
+      <v-col class="v-col-6 v-col-md-2 d-flex justify-start justify-md-start order-1">
         <v-btn @click="emit('close')" variant="text">
           <template v-slot:prepend>
             <svg
@@ -81,11 +78,13 @@ async function confirmDeletion() {
         </v-btn>
       </v-col>
 
-      <v-col class="d-flex justify-center text-h4 cursor-text">
+      <v-col
+        class="d-flex justify-center text-h4 text-center v-col-12 v-col-md-8 order-3"
+      >
         {{ diarySettings.title }}
       </v-col>
 
-      <v-col cols="2" class="d-flex align-center justify-end">
+      <v-col class="v-col-6 v-col-md-2 d-flex justify-end justify-md-end order-2 order-md-4">
         <v-btn
           @click="isDiarySettingsModalOpen = true"
           variant="text"
@@ -128,7 +127,7 @@ async function confirmDeletion() {
       {{ datePeriod }}
     </v-container>
 
-    <div class="d-flex justify-center">
+    <div class="d-flex justify-center flex-wrap">
       <v-btn
         v-if="isChaptersEmpty"
         color="primary"
@@ -155,7 +154,7 @@ async function confirmDeletion() {
       </v-btn>
       <template v-else>
         <v-btn
-          class="mx-2"
+          class="mx-2 mb-3 mb-md-0"
           @click="emit('download')"
           :disabled="isPdfGenerating"
         >

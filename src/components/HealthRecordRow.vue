@@ -4,6 +4,9 @@ import { useTheme } from "vuetify";
 import { putHealthRecord } from "../api/api.js";
 import useErrorStack from "../composables/ErrorStack.js";
 import _ from "lodash";
+import DateInput from "../components/DateInput.vue";
+import TimeInput from "../components/TimeInput.vue";
+import DateTimeInput from "../components/DateTimeInput.vue";
 
 const theme = useTheme();
 
@@ -97,11 +100,30 @@ onMounted(() => {
   <template v-else>
     <td v-for="(column, i) in columns" class="text-left" :key="i">
       <v-text-field
+        v-if="column.type == 'Text'"
         v-model="localData[column.identifier]"
         :label="column.title"
         :hide-details="true"
         variant="plain"
       ></v-text-field>
+
+      <date-input
+        :id="id + column.identifier"
+        v-else-if="column.type == 'Date'"
+        v-model="localData[column.identifier]"
+      ></date-input>
+
+      <time-input
+        :id="id + column.identifier"
+        v-else-if="column.type == 'Time'"
+        v-model="localData[column.identifier]"
+      ></time-input>
+
+      <date-time-input
+        :id="id + column.identifier"
+        v-else-if="column.type == 'Date and time'"
+        v-model="localData[column.identifier]"
+      ></date-time-input>
     </td>
     <td class="pa-0">
       <div class="d-flex justify-end">

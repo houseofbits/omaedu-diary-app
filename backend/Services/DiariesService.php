@@ -6,6 +6,7 @@ use Backend\Entities\User;
 use Backend\Entities\Diary;
 use Backend\Structures\DiarySettingsStructure;
 use Backend\Structures\HealthRecordSettingsStructure;
+use Backend\Structures\HealthRecordColumnStructure;
 use Backend\Repositories\DiariesRepository;
 use Backend\Exceptions\HttpException;
 
@@ -50,6 +51,7 @@ class DiariesService
             ->setType($data['type'])
             ->setDiaryTitle(htmlspecialchars($data['title']))
             ->setDiaryDescription(htmlspecialchars($data['description']))
+            ->setColor($data['color'])
             ->setSettings($settings);
 
         $diary = $this->diariesRepository->save($diary);
@@ -74,6 +76,7 @@ class DiariesService
 
         $diary->setDiaryTitle(htmlspecialchars($data['title']))
             ->setDiaryDescription(htmlspecialchars($data['description']))
+            ->setColor($data['color'])
             ->setSettings($settings);
 
         $diary = $this->diariesRepository->save($diary);
@@ -111,9 +114,19 @@ class DiariesService
     private function createHealthRecordSettingsStructure(array $data): HealthRecordSettingsStructure
     {
         $settings = new HealthRecordSettingsStructure();
-        $settings->columns = $data['settings']['columns'];
+        $settings->columns = array_map([$this, "createHealthRecordColumnStructure"], $data['settings']['columns']);
 
         return $settings;
+    }
+
+    private function createHealthRecordColumnStructure(array $data): HealthRecordColumnStructure
+    {
+        $structure = new HealthRecordColumnStructure();
+        $structure->identifier = $data['identifier'];
+        $structure->title = $data['title'];
+        $structure->type = $data['type'];
+
+        return $structure;
     }
 
     private function createDiaryListData(Diary $diary): array
@@ -122,6 +135,7 @@ class DiariesService
             "id" => $diary->getId(),
             "type" => $diary->getType(),
             "title" => htmlspecialchars_decode($diary->getDiaryTitle()),
+            "color" => $diary->getColor(),
             "description" => htmlspecialchars_decode($diary->getDiaryDescription()),
         ];
     }

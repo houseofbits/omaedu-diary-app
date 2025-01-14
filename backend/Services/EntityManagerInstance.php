@@ -27,6 +27,7 @@ class EntityManagerInstance extends EntityManager
             'password' => $_ENV['MYSQL_PASSWORD'],
             'dbname' => $_ENV['MYSQL_DATABASE'],
             'host' => $_ENV['MYSQL_HOST'],
+            'charset' => 'UTF8',
         );
 
         $connection = static::createConnection($dbParams, $config, null);

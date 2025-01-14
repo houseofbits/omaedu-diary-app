@@ -39,8 +39,8 @@ const isHealthRecordSettingsModalOpen = ref(false);
     @created="(diaryId) => emit('health-record-created', diaryId)"
   ></health-record-setings-modal>
 
-  <v-container fluid class="header-bg">
-    <v-row justify="center" class="mb-2">
+  <v-container fluid class="header-bg" min-width="400">
+    <v-row justify="center" class="mb-2 d-flex flex-wrap">
       <v-col cols="2">
         <v-btn
           color="primary"
@@ -62,12 +62,12 @@ const isHealthRecordSettingsModalOpen = ref(false);
           </svg>
         </v-btn>
       </v-col>
-      <v-col class="d-flex justify-center text-h4"> Application name </v-col>
+      <v-col class="d-flex justify-center text-h4 text-center"> Application name </v-col>
       <v-col cols="2"></v-col>
     </v-row>
     <v-row no-gutters justify="center">
-      <v-col class="d-flex justify-center">
-        <v-btn class="mx-2" @click="isDiarySettingsModalOpen = true">
+      <v-col class="d-flex justify-center flex-wrap">
+        <v-btn class="mx-2 mb-3 mb-md-0" @click="isDiarySettingsModalOpen = true">
           <template v-slot:prepend>
             <svg
               xmlns="http://www.w3.org/2000/svg"

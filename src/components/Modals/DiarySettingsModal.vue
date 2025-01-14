@@ -3,6 +3,7 @@ import { ref, watch, inject, onMounted } from "vue";
 import useDiarySettings from "../../composables/DiarySettings";
 import { postDiary, putDiary } from "../../api/api";
 import useErrorStack from "../../composables/ErrorStack.js";
+import ColorInput from "../ColorInput.vue";
 
 const { addErrorMessage } = useErrorStack();
 const emit = defineEmits(["created", "update:modelValue"]);
@@ -20,6 +21,7 @@ const props = defineProps({
 const userCredentials = inject("userCredentials");
 const form = ref(null);
 const localIsOpen = ref(props.modelValue);
+const color = ref(diarySettings.color);
 const titleText = ref(diarySettings.title);
 const description = ref(diarySettings.description);
 const isPageNumberingEnabled = ref(diarySettings.isPageNumberingEnabled);
@@ -30,12 +32,14 @@ function loadSettingsValues() {
   if (props.diaryId) {
     titleText.value = diarySettings.title;
     description.value = diarySettings.description;
+    color.value = diarySettings.color;
     isPageNumberingEnabled.value = diarySettings.isPageNumberingEnabled;
     isTextJustifyEnabled.value = diarySettings.isTextJustifyEnabled;
     diaryTheme.value = diarySettings.diaryTheme;
   } else {
     titleText.value = "";
     description.value = "";
+    color.value = diarySettings.color;
     isPageNumberingEnabled.value = true;
     isTextJustifyEnabled.value = true;
     diaryTheme.value = "White";
@@ -67,6 +71,7 @@ function updateDiarySettings() {
   diarySettings.isPageNumberingEnabled = isPageNumberingEnabled.value;
   diarySettings.isTextJustifyEnabled = isTextJustifyEnabled.value;
   diarySettings.diaryTheme = diaryTheme.value;
+  diarySettings.color = color.value;
 }
 
 async function create() {
@@ -84,6 +89,7 @@ async function create() {
       "diary",
       titleText.value,
       description.value,
+      color.value,
       diarySettings
     );
 
@@ -112,6 +118,7 @@ async function update() {
       props.diaryId,
       titleText.value,
       description.value,
+      color.value,
       diarySettings
     );
   } catch (e) {
@@ -125,15 +132,25 @@ async function update() {
 </script>
 
 <template>
-  <v-dialog v-model="localIsOpen" width="auto">
+  <v-dialog
+    v-model="localIsOpen"
+    :fullscreen="$vuetify.display.xs"
+    max-width="600"
+  >
     <v-form ref="form">
-      <v-card min-width="500">
+      <v-card>
         <v-card-item>
+          <div class="d-flex align-center justify-space-between">
           <v-card-title v-if="diaryId">Change diary attributes</v-card-title>
           <v-card-title v-else>Start a new diary</v-card-title>
+          <color-input id="diary-color" v-model="color" />
+        </div>
         </v-card-item>
 
         <v-card-text>
+          <!-- <v-row dense class="mb-6">
+            <color-input v-model="color" />
+          </v-row> -->
           <v-row dense>
             <v-text-field
               v-model="titleText"
@@ -183,7 +200,11 @@ async function update() {
 
         <template v-slot:actions>
           <div class="d-flex justify-end">
-            <v-btn text="Cancel" @click="localIsOpen = false" class="mr-2"></v-btn>
+            <v-btn
+              text="Cancel"
+              @click="localIsOpen = false"
+              class="mr-2"
+            ></v-btn>
 
             <v-btn v-if="diaryId !== null" text="Save" @click="update"></v-btn>
             <v-btn v-else class="ms-auto" text="Create" @click="create"></v-btn>
@@ -194,3 +215,8 @@ async function update() {
   </v-dialog>
 </template>
 
+<style scoped>
+:deep(.v-card-item__content) {
+  overflow: visible !important;
+}
+</style>

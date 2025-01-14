@@ -212,7 +212,7 @@ export function imageUrl(userCredentials, imageId) {
     }).toString();
 }
 
-export async function postDiary(userCredentials, type, title, description, settings) {
+export async function postDiary(userCredentials, type, title, description, color, settings) {
   const response = await fetch(
     API_ENDPOINT +
     "?" +
@@ -226,6 +226,7 @@ export async function postDiary(userCredentials, type, title, description, setti
         type,
         title,
         description,
+        color,
         settings
       }),
       headers: {
@@ -237,7 +238,7 @@ export async function postDiary(userCredentials, type, title, description, setti
   return await response.json();
 }
 
-export async function putDiary(userCredentials, diaryId, title, description, settings) {
+export async function putDiary(userCredentials, diaryId, title, description, color, settings) {
   const response = await fetch(
     API_ENDPOINT +
     "?" +
@@ -251,6 +252,7 @@ export async function putDiary(userCredentials, diaryId, title, description, set
       body: JSON.stringify({
         title,
         description,
+        color,
         settings
       }),
       headers: {

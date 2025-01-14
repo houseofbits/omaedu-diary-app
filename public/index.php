@@ -31,7 +31,7 @@ require_once __DIR__ . '/vite.php';
     <link rel="preload" href="assets/images/tirkizs.jpg" as="image" crossorigin="anonymous">
     <link rel="preload" href="assets/images/zilas-spalvas.jpg" as="image" crossorigin="anonymous">
 
-    <?= vite('_vendor-C1h9822P.js') ?>
+    <?= vite('_vendor-yczTULSJ.js') ?>
     <?= vite('main.js') ?>
 
 </head>

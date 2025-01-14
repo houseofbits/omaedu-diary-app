@@ -25,8 +25,12 @@ watch(
 </script>
 
 <template>
-  <v-dialog v-model="localIsOpen" width="auto">
-    <v-card max-width="600" title="Welcome to your private diary">
+  <v-dialog
+    v-model="localIsOpen"
+    :fullscreen="$vuetify.display.xs"
+    max-width="800"
+  >
+    <v-card title="Welcome to your private diary">
       <v-container>
         <p class="mb-6">
           To write a new story into Your diary press

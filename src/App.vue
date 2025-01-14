@@ -129,13 +129,13 @@ onMounted(async () => {
         @health-record-created="onHealthRecordTableCreated"
       />
 
-      <v-container class="pt-2" max-width="1100">
+      <v-container class="pt-2" max-width="1100" min-width="400">
         <v-row dense>
           <v-col v-for="(diary, i) in diaries" :key="i" cols="12" md="4">
             <v-card
               variant="elevated"
               class="mx-auto"
-              color="surface"
+              :color="diary.color"
               max-width="344"
               link
               @click="selectDiary(diary.id, diary.type)"

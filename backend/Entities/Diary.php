@@ -52,6 +52,11 @@ class Diary
     protected string $diaryDescription = "";
 
     /**
+     * @ORM\Column(type="string", length=80, name="color")
+     */
+    protected string $color = "";
+
+    /**
      * @ORM\Column(type="json")
      */
     protected array $settings = [];
@@ -64,7 +69,7 @@ class Diary
     /**
      * @ORM\OneToMany(targetEntity="HealthRecord", mappedBy="diary")
      */
-    private Collection $healthRecords;    
+    private Collection $healthRecords;
 
     public function setId(int $id): Diary
     {
@@ -82,25 +87,31 @@ class Diary
     {
         $this->type = $type;
         return $this;
-    } 
+    }
 
     public function setDiaryTitle(string $diaryTitle): Diary
     {
         $this->diaryTitle = $diaryTitle;
         return $this;
-    } 
+    }
 
     public function setDiaryDescription(string $diaryDescription): Diary
     {
         $this->diaryDescription = $diaryDescription;
         return $this;
-    }     
-    
+    }
+
+    public function setColor(string $color): Diary
+    {
+        $this->color = $color;
+        return $this;
+    }
+
     public function setSettings(array $settings): Diary
     {
         $this->settings = $settings;
         return $this;
-    }     
+    }
 
     public function getId(): ?int
     {
@@ -110,27 +121,37 @@ class Diary
     public function getUser(): ?User
     {
         return $this->user;
-    }    
+    }
 
     public function getType(): string
     {
         return $this->type;
-    }    
+    }
 
     public function getDiaryTitle(): string
     {
         return $this->diaryTitle;
-    }  
+    }
 
     public function getDiaryDescription(): string
     {
         return $this->diaryDescription;
-    }      
-    
+    }
+
+
+    public function getColor(): string
+    {
+        if (empty($this->color)) {
+            return '#FFF';
+        }
+
+        return $this->color;
+    }
+
     public function getSettings(): array
     {
         return $this->settings;
-    }   
+    }
 
     /**
      * @return Collection<int, Chapter>
@@ -138,25 +159,28 @@ class Diary
     public function getChapters(): Collection
     {
         return $this->chapters;
-    }   
-    
+    }
+
     /**
      * @return Collection<int, HealthRecord>
      */
     public function getHealthRecords(): Collection
     {
         return $this->healthRecords;
-    }       
-    
-    public function isDiary(): bool {
+    }
+
+    public function isDiary(): bool
+    {
         return $this->type == "diary";
     }
 
-    public function toJson() {
+    public function toJson()
+    {
         return [
             'id' => $this->id,
             'title' => $this->diaryTitle,
             'description' => $this->diaryDescription,
+            'color' => $this->color,
             'settings' => $this->settings,
         ];
     }

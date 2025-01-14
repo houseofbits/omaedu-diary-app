@@ -17,7 +17,7 @@ import useHealthRecordSettings from "../composables/HealthRecordSettings.js";
 const userCredentials = inject("userCredentials");
 const { addErrorMessage } = useErrorStack();
 const theme = useTheme();
-const emit = defineEmits(["add-chapter", "download", "print", "close"]);
+const emit = defineEmits(["add-health-record", "download", "print", "close"]);
 const props = defineProps({
   diaryId: Number,
   canDelete: Boolean,
@@ -55,9 +55,9 @@ async function confirmDeletion() {
     :diary-id="diaryId"
   ></health-record-settings-modal>
 
-  <v-container fluid class="header-bg pb-8">
+  <v-container fluid class="header-bg pb-8" min-width="400">
     <v-row no-gutters justify="center">
-      <v-col cols="2">
+      <v-col class="v-col-6 v-col-md-2 d-flex justify-start order-1">
         <v-btn @click="emit('close')" variant="text">
           <template v-slot:prepend>
             <svg
@@ -77,11 +77,13 @@ async function confirmDeletion() {
         </v-btn>
       </v-col>
 
-      <v-col class="d-flex justify-center text-h4 cursor-text">
+      <v-col
+        class="d-flex justify-center text-h4 text-center v-col-12 v-col-md-8 order-3"
+      >
         {{ healthRecordSettings.title }}
       </v-col>
 
-      <v-col cols="2" class="d-flex align-center justify-end">
+      <v-col class="v-col-6 v-col-md-2 d-flex justify-end order-2 order-md-4">
         <v-btn
           @click="isSettingsModalOpen = true"
           variant="text"

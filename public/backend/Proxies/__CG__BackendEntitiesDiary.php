@@ -67,10 +67,10 @@ class Diary extends \Backend\Entities\Diary implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'id', 'user', 'type', 'diaryTitle', 'diaryDescription', 'settings', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'chapters', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'healthRecords', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'createdAt', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'updatedAt'];
+            return ['__isInitialized__', 'id', 'user', 'type', 'diaryTitle', 'diaryDescription', 'color', 'settings', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'chapters', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'healthRecords', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'createdAt', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'updatedAt'];
         }
 
-        return ['__isInitialized__', 'id', 'user', 'type', 'diaryTitle', 'diaryDescription', 'settings', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'chapters', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'healthRecords', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'createdAt', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'updatedAt'];
+        return ['__isInitialized__', 'id', 'user', 'type', 'diaryTitle', 'diaryDescription', 'color', 'settings', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'chapters', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'healthRecords', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'createdAt', '' . "\0" . 'Backend\\Entities\\Diary' . "\0" . 'updatedAt'];
     }
 
     /**
@@ -235,6 +235,17 @@ class Diary extends \Backend\Entities\Diary implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function setColor(string $color): \Backend\Entities\Diary
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setColor', [$color]);
+
+        return parent::setColor($color);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setSettings(array $settings): \Backend\Entities\Diary
     {
 
@@ -300,6 +311,17 @@ class Diary extends \Backend\Entities\Diary implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDiaryDescription', []);
 
         return parent::getDiaryDescription();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getColor(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getColor', []);
+
+        return parent::getColor();
     }
 
     /**

@@ -107,7 +107,7 @@ onMounted(async () => {
     <v-sheet
       class="rounded-lg mt-10 pa-2 text-center mx-auto d-flex flex-column"
       elevation="4"
-      max-width="800"
+      max-width="1100"
       width="100%"
     >
       <v-table hover>
@@ -124,13 +124,18 @@ onMounted(async () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in rows" :key="row.id" @click="selectedRow = row.id">
+          <tr
+            v-for="row in rows"
+            :key="row.id"
+            @click="selectedRow = row.id"
+            :class="{ 'bg-grey-lighten-3': (selectedRow == row.id) }"
+          >
             <health-record-row
               :id="row.id"
               :selected-row="selectedRow"
               :columns="healthRecordSettings.columns"
               :data="row.data"
-              @edit="(id) => selectedRow = id"
+              @edit="(id) => (selectedRow = id)"
               @delete="deleteRecord"
             >
             </health-record-row>

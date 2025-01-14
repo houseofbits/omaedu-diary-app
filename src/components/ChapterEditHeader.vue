@@ -31,7 +31,7 @@ watch(
 <template>
   <v-container fluid class="header-bg">
     <v-row>
-      <v-col cols="2">
+      <v-col class="v-col-6 v-col-md-2 d-flex justify-start justify-md-start order-1">
         <v-btn @click="emit('close')" variant="text">
           <template v-slot:prepend>
             <svg
@@ -51,11 +51,11 @@ watch(
         </v-btn>
       </v-col>
 
-      <v-col class="d-flex justify-center text-h5 cursor-text">
+      <v-col class="d-flex justify-center text-h4 text-center v-col-12 v-col-md-8 order-3">
         {{ title }}
       </v-col>
 
-      <v-col cols="2" class="d-flex align-center justify-end">
+      <v-col class="v-col-6 v-col-md-2 d-flex justify-end justify-md-end order-2 order-md-4">
         <v-btn
           @click="isDeleteConfirmationModalOpen = true"
           variant="text"

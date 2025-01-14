@@ -6,6 +6,7 @@ const diarySettings = reactive({
     diaryTheme: 'White',
     isPageNumberingEnabled: true,
     isTextJustifyEnabled: true,
+    color: '#FFF',
 });
 
 const diaryThemes = [
@@ -55,6 +56,7 @@ export default function useDiarySettings() {
 
     function setDiarySettings(settingsData) {
         diarySettings.title = settingsData.title ?? 'Diary title';
+        diarySettings.color = settingsData.color ?? '#FFF';
         diarySettings.description = settingsData.description ?? '';
         diarySettings.diaryTheme = settingsData.settings.diaryTheme ?? 'Default';
         diarySettings.isPageNumberingEnabled = settingsData.settings.isPageNumberingEnabled ?? true;

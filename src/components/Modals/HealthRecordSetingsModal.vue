@@ -6,6 +6,7 @@ import useErrorStack from "../../composables/ErrorStack.js";
 import useHealthRecordSettings from "../../composables/HealthRecordSettings.js";
 import MD5 from "crypto-js/md5";
 import _ from "lodash";
+import ColorInput from "../ColorInput.vue";
 
 const { addErrorMessage } = useErrorStack();
 const emit = defineEmits(["created", "update:modelValue"]);
@@ -26,18 +27,20 @@ const { healthRecordSettings, setHealthRecordSettings } =
 const userCredentials = inject("userCredentials");
 const form = ref(null);
 const primaryColor = theme.current.value.colors.primary;
+const color = ref("#FFF");
 const localIsOpen = ref(props.modelValue);
 const titleText = ref("");
 const hasMissingColumns = ref(false);
 const description = ref("");
 const columnNames = ["Date", "Weight", "Height", "Blood pressure"];
-const columnTypes = ["Text", "Date"];
+const columnTypes = ["Text", "Date", "Time", "Date and time"];
 const columns = reactive([]);
 const isDeletionWarningVisible = ref(false);
 
 function loadSettingsValues() {
   if (props.diaryId) {
     titleText.value = healthRecordSettings.title;
+    color.value = healthRecordSettings.color;
     description.value = healthRecordSettings.description;
     columns.length = 0;
     columns.push(..._.cloneDeep(healthRecordSettings.columns));
@@ -124,6 +127,7 @@ async function create() {
       "health-record",
       titleText.value,
       description.value,
+      color.value,
       {
         columns: columns,
       }
@@ -153,6 +157,7 @@ async function update() {
       props.diaryId,
       titleText.value,
       description.value,
+      color.value,
       {
         columns: columns,
       }
@@ -161,6 +166,7 @@ async function update() {
     setHealthRecordSettings({
       title: titleText.value,
       description: description.value,
+      color: color.value,
       settings: {
         columns: Object.values(columns),
       },
@@ -176,21 +182,28 @@ async function update() {
 </script>
 
 <template>
-  <v-dialog v-model="localIsOpen" width="auto">
+  <v-dialog
+    v-model="localIsOpen"
+    :fullscreen="$vuetify.display.xs"
+    max-width="600"
+  >
     <v-form ref="form">
-      <v-card min-width="500">
+      <v-card>
         <v-card-item>
-          <v-card-title v-if="diaryId">
-            Change health record table attributes
-          </v-card-title>
-          <v-card-title v-else>Add new health record table</v-card-title>
+          <div class="d-flex align-center justify-space-between">
+            <v-card-title v-if="diaryId">
+              Change health record table attributes
+            </v-card-title>
+            <v-card-title v-else>Add new health record table</v-card-title>
+            <color-input id="hr-color" v-model="color" />
+          </div>
         </v-card-item>
 
         <v-card-text class="mb-3 pb-0">
           <v-row dense>
             <v-text-field
               v-model="titleText"
-              label="Title of this diary (required)"
+              label="Title of this health record table (required)"
               :rules="[requiredValidationRule]"
               variant="underlined"
             />
@@ -198,7 +211,7 @@ async function update() {
           <v-row dense>
             <v-textarea
               v-model="description"
-              label="Diary description"
+              label="Health record table description"
               row-height="4"
               rows="4"
               variant="underlined"
@@ -339,3 +352,8 @@ async function update() {
   </v-dialog>
 </template>
 
+<style scoped>
+:deep(.v-card-item__content) {
+  overflow: visible !important;
+}
+</style>

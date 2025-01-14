@@ -27,6 +27,7 @@ function selectChapter(index) {
         :value="chapter"
         color="primary"
         class="chapters-list-item"
+        elevation="1"
         @click="selectChapter(i)"
       >
         <template v-slot:prepend>
@@ -73,10 +74,11 @@ function selectChapter(index) {
 .background-none {
   background: none !important;
 }
-.chapters-list-item{
-  background: white;
+.chapters-list-item {
+  background: white !important;
   margin-top: 6px;
   border-radius: 6px !important;
   padding-right: 12px !important;
 }
+
 </style>
