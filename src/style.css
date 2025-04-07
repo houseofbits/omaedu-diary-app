@@ -56,6 +56,6 @@
 
     @page {
         margin: 0.01in !important;
-        size: portrait;
+        size: a4 portrait;
     }
 }

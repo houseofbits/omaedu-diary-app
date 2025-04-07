@@ -5,7 +5,7 @@ const props = defineProps({
   id: String,
   modelValue: { String },
 });
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "is-open"]);
 
 const isMenuOpen = ref(false);
 const time = ref();
@@ -26,6 +26,13 @@ const displayTime = computed(() => {
 function close() {
   isMenuOpen.value = false;
 }
+
+watch(
+  () => isMenuOpen.value,
+  () => {
+    emit("is-open", isMenuOpen.value);
+  }
+);
 
 watch(
   () => time.value,

@@ -33,7 +33,7 @@ const props = defineProps({
   diaryId: Number,
 });
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", 'loaded']);
 
 const {
   settings,
@@ -155,6 +155,8 @@ onMounted(async () => {
   }
 
   isLoading.value = false;
+
+  emit('loaded');
 });
 
 async function createPdf() {

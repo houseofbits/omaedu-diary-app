@@ -7,7 +7,7 @@ const props = defineProps({
   id: String,
   modelValue: { String },
 });
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", 'is-open']);
 
 const dateTime = ref();
 const date = ref();
@@ -61,11 +61,15 @@ watch(
   },
   { immediate: true }
 );
+
+function emitIsOpen(isOpen) {
+  emit('is-open', isOpen);
+}
 </script>
 
 <template>
   <div class="d-flex">
-    <date-input :id="id" v-model="date" button-class="mr-2"></date-input>
-    <time-input v-model="time"></time-input>
+    <date-input :id="id" v-model="date" button-class="mr-2" @is-open="emitIsOpen"></date-input>
+    <time-input v-model="time" @is-open="emitIsOpen"></time-input>
   </div>
 </template>

@@ -5,6 +5,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import './style.css'
 import App from './App.vue'
+import IdentityError from './IdentityError.vue'
 import { VTimePicker } from 'vuetify/labs/VTimePicker'
 
 const myCustomLightTheme = {
@@ -37,17 +38,21 @@ const vuetify = createVuetify({
   },
 })
 
-createApp(App)
-  .provide('userCredentials', '8yP5aDBBnj1kS9Xxtn6akjhmUkhUTjVWWDczZUtYWkVNTDlSWVE9PQ')
-  .use(vuetify)
-  .mount('#vue-app');
+// createApp(App)
+//   .provide('userCredentials', '8yP5aDBBnj1kS9Xxtn6akjhmUkhUTjVWWDczZUtYWkVNTDlSWVE9PQ')
+//   .use(vuetify)
+//   .mount('#vue-app');
 
-// const query = new URLSearchParams(window.location.search);
+const query = new URLSearchParams(window.location.search);
 
-// if (query.has('identity')) {
-//     createApp(App)
-//         .provide('userCredentials', query.get('identity'))
-//         .use(vuetify)
-//         .mount('#vue-app');
-// }
+if (query.has('identity')) {
+    createApp(App)
+        .provide('userCredentials', query.get('identity'))
+        .use(vuetify)
+        .mount('#vue-app');
+} else {
+    createApp(IdentityError)
+        .use(vuetify)
+        .mount('#vue-app');
+}
 

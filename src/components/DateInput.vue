@@ -6,7 +6,7 @@ const props = defineProps({
   modelValue: { String },
   buttonClass: String,
 });
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "is-open"]);
 
 const isMenuOpen = ref(false);
 const date = ref(new Date());
@@ -32,6 +32,13 @@ const displayTime = computed(() => {
     return "date";
   }
 });
+
+watch(
+  () => isMenuOpen.value,
+  () => {
+    emit("is-open", isMenuOpen.value);
+  }
+);
 
 watch(
   () => date.value,

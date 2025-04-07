@@ -28,7 +28,7 @@ const props = defineProps({
   diaryId: Number,
 });
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close", 'loaded']);
 
 const { errorMessages, addErrorMessage } = useErrorStack();
 const theme = useTheme();
@@ -38,6 +38,7 @@ const userCredentials = inject("userCredentials");
 const isLoading = ref(true);
 const selectedRow = ref(null);
 const rows = reactive([]);
+const isRowEditting = ref(false);
 
 async function createAndEdit() {
   try {
@@ -92,7 +93,15 @@ onMounted(async () => {
   await fetchRecords();
 
   isLoading.value = false;
+
+  emit('loaded');
 });
+
+function onClickOutside() {
+  // if (!isRowEditting.value) {
+  //   selectedRow.value = null;
+  // }
+}
 </script>
 
 <template>
@@ -109,6 +118,7 @@ onMounted(async () => {
       elevation="4"
       max-width="1100"
       width="100%"
+      v-click-outside="onClickOutside"
     >
       <v-table hover>
         <thead>
@@ -128,7 +138,7 @@ onMounted(async () => {
             v-for="row in rows"
             :key="row.id"
             @click="selectedRow = row.id"
-            :class="{ 'bg-grey-lighten-3': (selectedRow == row.id) }"
+            :class="{ 'bg-grey-lighten-3': selectedRow == row.id }"
           >
             <health-record-row
               :id="row.id"
@@ -137,6 +147,7 @@ onMounted(async () => {
               :data="row.data"
               @edit="(id) => (selectedRow = id)"
               @delete="deleteRecord"
+              @is-editting="(val) => (isRowEditting = val)"
             >
             </health-record-row>
           </tr>

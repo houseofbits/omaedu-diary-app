@@ -39,6 +39,7 @@ const backgroundColor = theme.current.value.colors.background;
 const diaries = reactive([]);
 const selectedDiaryId = ref(null);
 const selectedDiaryType = ref("diary");
+const isSelectedDiaryLoading = ref(false);
 
 const cssThemeProps = computed(() => {
   return {
@@ -60,9 +61,19 @@ const isHealthRecordSelected = computed(() => {
   );
 });
 
+const isMainSectionVisible = computed(() => {
+  return (
+    selectedDiaryId.value == null ||
+    (selectedDiaryId.value != null && isSelectedDiaryLoading.value == true)
+  );
+});
+
 function selectDiary(id, type) {
-  selectedDiaryId.value = id;
-  selectedDiaryType.value = type;
+  if (selectedDiaryId.value != id) {
+    selectedDiaryId.value = id;
+    selectedDiaryType.value = type;
+    isSelectedDiaryLoading.value = true;
+  }
 }
 
 async function fetchDiaries() {
@@ -103,6 +114,10 @@ function onHealthRecordTableCreated(diaryId) {
   selectDiary(diaryId, "health-record");
 }
 
+function isDiaryLoading(id) {
+  return selectedDiaryId.value == id && isSelectedDiaryLoading.value;
+}
+
 onMounted(async () => {
   await getUserData();
   await fetchDiaries();
@@ -115,15 +130,17 @@ onMounted(async () => {
       v-if="isDiarySelected"
       :diary-id="selectedDiaryId"
       @close="closeSelectedView"
+      @loaded="isSelectedDiaryLoading = false"
     ></diary-view>
 
     <health-record-view
       v-else-if="isHealthRecordSelected"
       :diary-id="selectedDiaryId"
       @close="closeSelectedView"
+      @loaded="isSelectedDiaryLoading = false"
     ></health-record-view>
 
-    <template v-else>
+    <template v-if="isMainSectionVisible">
       <app-header
         @diary-created="onDiaryCreated"
         @health-record-created="onHealthRecordTableCreated"
@@ -133,6 +150,7 @@ onMounted(async () => {
         <v-row dense>
           <v-col v-for="(diary, i) in diaries" :key="i" cols="12" md="4">
             <v-card
+              :loading="isDiaryLoading(diary.id)"
               variant="elevated"
               class="mx-auto"
               :color="diary.color"
@@ -142,8 +160,8 @@ onMounted(async () => {
             >
               <v-card-item>
                 <v-card-title>
-                  <div class="d-flex">
-                    <div class="flex-grow-1">{{ diary.title }}</div>
+                  <div class="d-flex justify-space-between align-center">
+                    <div class="text-truncate">{{ diary.title }}</div>
 
                     <svg
                       v-if="diary.type == 'diary'"
@@ -151,6 +169,7 @@ onMounted(async () => {
                       height="20"
                       width="20"
                       viewBox="0 0 448 512"
+                      class="card-icon"
                     >
                       >
                       <path
@@ -164,6 +183,7 @@ onMounted(async () => {
                       height="20"
                       width="20"
                       viewBox="0 0 512 512"
+                      class="card-icon"
                     >
                       <path
                         :fill="primaryColor"
@@ -201,4 +221,9 @@ onMounted(async () => {
 </template>
 
 <style>
+.card-icon {
+  flex-basis: 20px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
 </style>

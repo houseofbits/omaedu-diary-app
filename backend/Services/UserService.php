@@ -35,6 +35,7 @@ class UserService
         // $encrypted = base64_encode($iv . $encrypted);
         // var_dump($encrypted);
 
+        //Decription
         $encrypted = base64_decode($credentials);
         $iv = substr($encrypted, 0, openssl_cipher_iv_length($method));
         $encrypted = substr($encrypted, openssl_cipher_iv_length($method));

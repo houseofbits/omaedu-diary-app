@@ -148,9 +148,6 @@ async function update() {
         </v-card-item>
 
         <v-card-text>
-          <!-- <v-row dense class="mb-6">
-            <color-input v-model="color" />
-          </v-row> -->
           <v-row dense>
             <v-text-field
               v-model="titleText"

@@ -57,7 +57,6 @@ export default class CanvasPrintPageRenderer {
             //     imgWidth = imgHeight / destAspect;
             //     imgX = (img.width - imgWidth) * 0.5;
             // }
-
             // ctx.drawImage(img, imgX, imgY, imgWidth, imgHeight, fragment.x, fragment.y, fragment.width, fragment.height);
 
             let targetWidth = img.width;

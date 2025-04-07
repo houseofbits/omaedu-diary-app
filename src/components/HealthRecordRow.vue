@@ -10,7 +10,7 @@ import DateTimeInput from "../components/DateTimeInput.vue";
 
 const theme = useTheme();
 
-const emit = defineEmits(["edit", "delete"]);
+const emit = defineEmits(["edit", "delete", "is-editting"]);
 
 const props = defineProps({
   id: Number,
@@ -58,6 +58,10 @@ function createLocalData() {
       localData[column.identifier] = props.data[column.identifier] ?? "";
     }
   }
+}
+
+function emitIsEditting(isOpen) {
+  emit("is-editting", isOpen);
 }
 
 onMounted(() => {
@@ -111,18 +115,21 @@ onMounted(() => {
         :id="id + column.identifier"
         v-else-if="column.type == 'Date'"
         v-model="localData[column.identifier]"
+        @is-open="emitIsEditting"
       ></date-input>
 
       <time-input
         :id="id + column.identifier"
         v-else-if="column.type == 'Time'"
         v-model="localData[column.identifier]"
+        @is-open="emitIsEditting"
       ></time-input>
 
       <date-time-input
         :id="id + column.identifier"
         v-else-if="column.type == 'Date and time'"
         v-model="localData[column.identifier]"
+        @is-open="emitIsEditting"
       ></date-time-input>
     </td>
     <td class="pa-0">
